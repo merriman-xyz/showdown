@@ -206,26 +206,38 @@ section.year{scroll-margin-top:56px}
   padding:8px 12px;cursor:pointer;font:12px var(--sans)}
 .psearch .hit:hover,.psearch .hit:focus-visible{background:var(--accent-tint)}
 .psearch .hit .nm{font-weight:600;color:var(--ink-strong);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.pmodal{position:fixed;inset:0;z-index:50;display:none;align-items:flex-start;justify-content:center;
-  background:rgba(28,26,22,.35);padding:6vh 12px;overflow-y:auto}
+/* player popout — keaiui popout.js recipe: raised card, border-strong,
+   radius-1, bevel-window, chrome-accent header bar; bottom sheet on mobile */
+.pmodal{position:fixed;inset:0;z-index:50;display:none;align-items:flex-end;justify-content:center;
+  background:rgba(0,0,0,.35);padding:0}
 .pmodal.on{display:flex}
-.pcard{background:var(--raised);border:1px solid var(--border-strong);border-radius:6px;
-  box-shadow:var(--bevel-raised), 0 8px 30px rgba(28,26,22,.3);max-width:680px;width:100%;
-  padding:16px 20px;position:relative}
-.pcard h3{font:600 20px/1.2 var(--serif);font-variant:small-caps;letter-spacing:.05em;
-  color:var(--ink-strong);margin:0;padding-right:34px}
-.pcard .meta{font-size:11px;color:var(--muted);margin:3px 0 12px}
+.pcard{display:flex;flex-direction:column;width:100%;max-width:680px;max-height:92dvh;overflow:hidden;
+  background:var(--raised);border:1px solid var(--border-strong);
+  border-radius:2px 2px 0 0;box-shadow:0 6px 16px rgba(15,23,32,.14)}
+@media (min-width:640px){
+  .pmodal{align-items:center;padding:24px}
+  .pcard{border-radius:2px;max-height:85vh}
+}
+.pcard .bar{flex:none;display:flex;align-items:center;justify-content:space-between;gap:8px;
+  min-height:44px;padding:0 12px;border-bottom:1px solid var(--border-strong);
+  background:var(--accent-soft);user-select:none}
+@media (min-width:640px){.pcard .bar{min-height:0;height:26px}}
+.pcard .bar .t{font:600 13px/1 var(--serif);font-variant:small-caps;letter-spacing:.05em;
+  color:var(--ink-strong);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pcard .bar .x{all:unset;box-sizing:border-box;cursor:pointer;display:inline-flex;align-items:center;
+  justify-content:center;width:18px;height:18px;font:700 10px/1 var(--sans);color:var(--ink);
+  border:1px solid var(--border-strong);border-radius:2px;background:var(--btn);
+  box-shadow:var(--bevel-raised);transition:background var(--motion-fast) ease-out}
+.pcard .bar .x:hover{background:var(--btn-hover)}
+.pcard .bar .x:active{background:var(--btn-active);box-shadow:none}
+.pcard .bar .x:focus-visible{outline:2px solid var(--accent)}
+.pcard .bd{padding:12px 16px;overflow-y:auto}
+.pcard .meta{font-size:11px;color:var(--muted);margin:0 0 12px}
 .pcard .stats{display:flex;gap:20px;flex-wrap:wrap;margin:0 0 12px;font-variant-numeric:tabular-nums}
 .pcard .stat .l{font:700 9px/1.4 var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
 .pcard .stat .v{font:700 20px/1.2 var(--sans);color:var(--ink-strong)}
 .pcard .stat .v.acc{color:var(--accent)}
 .pcard .stat .s{font-size:10px;color:var(--muted)}
-.pcard .x{all:unset;box-sizing:border-box;position:absolute;top:12px;right:14px;cursor:pointer;
-  width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;
-  font:700 13px/1 var(--sans);color:var(--muted);border:1px solid var(--border);border-radius:2px;
-  background:var(--btn);transition:background var(--motion-fast) ease-out}
-.pcard .x:hover{background:var(--btn-hover);color:var(--ink)}
-.pcard .x:focus-visible{outline:2px solid var(--accent)}
 .pchart{display:block;width:100%;height:auto;background:var(--page);border:1px solid var(--border);border-radius:4px}
 .pchart polyline{fill:none;stroke:var(--accent);stroke-width:1.6}
 .pchart line.grid{stroke:var(--sunken);stroke-width:1}
@@ -791,11 +803,12 @@ function openPlayer(pid){
   const roleWord = e.role === 'B' ? 'hitters' : e.role === 'SP' ? 'starters' : 'relievers';
   const act = e.selo !== undefined;
   pcard.innerHTML =
-    `<button class="x" aria-label="close">✕</button>`+
-    `<h3>${NAMES[e.id]||e.id}${e.nm<1000?' <span class="prov" title="provisional">°</span>':''} ${brefLink(e.id)}</h3>`+
+    `<div class="bar"><span class="t">${NAMES[e.id]||e.id}${e.nm<1000?' <span class="prov" title="provisional">°</span>':''}</span>`+
+    `<button class="x" aria-label="close">✕</button></div>`+
+    `<div class="bd">`+
     `<div class="meta">${e.role==='B' ? (e.pos||'hitter') : e.role}`+
     (act ? ` · ${e.team||'—'}` : ` · inactive — no rated at-bats in the last 3 weeks`)+
-    ` · ${e.nm.toLocaleString()} career matches</div>`+
+    ` · ${e.nm.toLocaleString()} career matches · ${brefLink(e.id)}</div>`+
     `<div class="stats">`+
     `<div class="stat"><div class="l">Career Elo</div><div class="v acc">${disp(e.elo)}</div>`+
       (act ? `<div class="s">#${roleRank[e.id]} of ${roleWord}</div>`
@@ -805,7 +818,7 @@ function openPlayer(pid){
     (peak !== null ? `<div class="stat"><div class="l">Career peak</div><div class="v">${Math.round(1500 + peak*SCALE/1000)}</div><div class="s">weekly high</div></div>` : '')+
     (act ? `<div class="stat"><div class="l">30d</div><div class="v">${fmtD(e.d30)}</div></div>`+
            `<div class="stat"><div class="l">90d</div><div class="v">${fmtD(e.d90)}</div></div>` : '')+
-    `</div>` + chartSVG(pid);
+    `</div>` + chartSVG(pid) + `</div>`;
   pmodal.classList.add('on');
   history.replaceState(null, '', '#p-' + pid);
 }
