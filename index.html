@@ -483,11 +483,11 @@ hv += `<p style="font-size:11px;color:var(--muted);margin:0 0 16px">From the Dis
 const CLUB_R = (1600 - 1500) / SCALE;
 const clubB = allB.filter(e=>e.elo >= CLUB_R), clubS = allS.filter(e=>e.elo >= CLUB_R),
       clubP = allR.filter(e=>e.elo >= CLUB_R);
-if (clubB.length) hv += `<h3 class="view">The 1600 club — hitters</h3><div class="card" id="tblClubB"></div>`;
+if (clubB.length) hv += `<h3 class="view">The 1600 club — ${clubB.length} of ${allB.length} hitters</h3><div class="card" id="tblClubB"></div>`;
 hv += `<h3 class="view">Top 100 hitters</h3><div class="card" id="tblH"></div>`;
-if (clubS.length) hv += `<h3 class="view">The 1600 club — starters</h3><div class="card" id="tblClubS"></div>`;
+if (clubS.length) hv += `<h3 class="view">The 1600 club — ${clubS.length} of ${allS.length} starters</h3><div class="card" id="tblClubS"></div>`;
 hv += `<h3 class="view">Top 50 starters</h3><div class="card" id="tblS"></div>`;
-if (clubP.length) hv += `<h3 class="view">The 1600 club — relievers</h3><div class="card" id="tblClubP"></div>`;
+if (clubP.length) hv += `<h3 class="view">The 1600 club — ${clubP.length} of ${allR.length} relievers</h3><div class="card" id="tblClubP"></div>`;
 hv += `<h3 class="view">Top 25 relievers</h3><div class="card" id="tblR"></div>`;
 
 /* — Season race — */
