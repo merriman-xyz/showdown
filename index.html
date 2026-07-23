@@ -176,7 +176,9 @@ nav.tabs button.on{background:var(--accent-soft);color:var(--accent-hover);borde
   transition:background var(--motion-fast) ease-out}
 .ychip:hover{background:var(--btn-hover);color:var(--ink)}
 .ychip:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
-section.year{scroll-margin-top:56px}
+section.year{scroll-margin-top:calc(var(--alnav-h, 47px) + 34px)}
+#pane-almanac h2.year{position:sticky;top:var(--alnav-h, 47px);z-index:4;
+  background:var(--page);padding-top:6px}
 #pane-almanac.mode-season .cut[data-cut="career"]{display:none}
 #pane-almanac.mode-career .cut[data-cut="season"]{display:none}
 .award{display:inline-block;font:700 9px/1.4 var(--sans);letter-spacing:.05em;
@@ -727,6 +729,15 @@ document.querySelector('nav.tabs').addEventListener('click', ev=>{
 });
 const alPane = document.getElementById('pane-almanac');
 alPane.classList.add('mode-season');
+function setAlnavH(){
+  const el = document.querySelector('#pane-almanac .alnav');
+  if (el && el.offsetHeight && document.documentElement)
+    document.documentElement.style.setProperty('--alnav-h', el.offsetHeight + 'px');
+}
+if (typeof window !== 'undefined' && window.addEventListener){
+  window.addEventListener('resize', setAlnavH);
+  setTimeout(setAlnavH, 0);
+}
 alPane.addEventListener('click', ev => {
   const m = ev.target.closest('#alseg button');
   if (m){
