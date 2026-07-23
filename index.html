@@ -457,15 +457,15 @@ for (const [list, lbl] of [[hitters,'Best hitter right now'],[sps,'Best starter'
 }
 hv += '</div>';
 
-/* — The 1600 club: elite territory, every role on one scale — */
-const clubR = (1600 - 1500) / SCALE;
-const club = [...allB, ...allS, ...allR].filter(e=>e.elo >= clubR).sort((a,b)=>b.elo-a.elo);
-if (club.length){
-  hv += `<h3 class="view">The 1600 club — elite territory, every role on one scale (greyed = sidelined)</h3>`+
-        `<div class="card" id="tblClub"></div>`;
-}
+/* — The 1600 club, per role (greyed = sidelined) — */
+const CLUB_R = (1600 - 1500) / SCALE;
+const clubB = allB.filter(e=>e.elo >= CLUB_R), clubS = allS.filter(e=>e.elo >= CLUB_R),
+      clubP = allR.filter(e=>e.elo >= CLUB_R);
+if (clubB.length) hv += `<h3 class="view">The 1600 club — hitters</h3><div class="card" id="tblClubB"></div>`;
 hv += `<h3 class="view">Top 100 hitters</h3><div class="card" id="tblH"></div>`;
+if (clubS.length) hv += `<h3 class="view">The 1600 club — starters</h3><div class="card" id="tblClubS"></div>`;
 hv += `<h3 class="view">Top 50 starters</h3><div class="card" id="tblS"></div>`;
+if (clubP.length) hv += `<h3 class="view">The 1600 club — relievers</h3><div class="card" id="tblClubP"></div>`;
 hv += `<h3 class="view">Top 25 relievers</h3><div class="card" id="tblR"></div>`;
 
 /* — Season race — */
@@ -787,7 +787,9 @@ alPane.addEventListener('click', ev => {
 });
 showTab(TABS.some(([k])=>'#'+k===location.hash) ? location.hash.slice(1) : 'season');
 if (CUR.length){
-  if (club.length) initTable('tblClub', club, COLS_CAREER, 'elo');
+  if (clubB.length) initTable('tblClubB', clubB, COLS_CAREER, 'elo');
+  if (clubS.length) initTable('tblClubS', clubS, COLS_CAREER, 'elo');
+  if (clubP.length) initTable('tblClubP', clubP, COLS_CAREER, 'elo');
   initTable('tblH', allB.slice(0,100), COLS_CAREER, 'elo');
   initTable('tblS', allS.slice(0,50), COLS_CAREER, 'elo');
   initTable('tblR', allR.slice(0,25), COLS_CAREER, 'elo');
