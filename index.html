@@ -967,7 +967,7 @@ function openPlayer(pk){
       (act ? `<div class="s">#${roleRank[pk]} of ${roleWord}</div>`
            : roleRank[pk] ? `<div class="s">#${roleRank[pk]} of ${roleWord} · frozen while out</div>`
            : `<div class="s">frozen while out</div>`)+`</div>`+
-    (act ? `<div class="stat"><div class="l">Season Elo</div><div class="v">${disp(e.selo)}</div><div class="s">#${seaRank[e.id]} in the ${YR} race</div></div>` : '')+
+    (act ? `<div class="stat"><div class="l">Season Elo</div><div class="v">${disp(e.selo)}</div><div class="s">#${seaRank[pk]} in the ${YR} race</div></div>` : '')+
     (peak !== null ? `<div class="stat"><div class="l">Career peak</div><div class="v">${Math.round(1500 + peak*SCALE/1000)}</div><div class="s">wk ${fmtWk(DATA.weeks[peakIdx])}</div></div>` : '')+
     (act ? `<div class="stat"><div class="l">30d</div><div class="v">${fmtD(e.d30)}</div></div>`+
            `<div class="stat"><div class="l">90d</div><div class="v">${fmtD(e.d90)}</div></div>` : '')+
