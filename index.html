@@ -815,7 +815,7 @@ for (const list of [hitters, sps, rps]){
 const pin = document.getElementById('psearch'), phits = document.getElementById('phits');
 const pmodal = document.getElementById('pmodal'), pcard = document.getElementById('pcard');
 if (pin){
-  pin.placeholder = `find a player — ${CUR.length} rated`;
+  pin.placeholder = `find a player — ${CUR.length + INACT.length} rated, 2015–now`;
   pin.addEventListener('input', () => {
     const q = NORM(pin.value.trim());
     if (q.length < 2){ phits.innerHTML = ''; return; }
