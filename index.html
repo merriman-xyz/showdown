@@ -99,7 +99,7 @@ ol.board.mover .delta{font-size:11px;text-align:right;font-variant-numeric:tabul
 .movers{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media (max-width:640px){.movers{grid-template-columns:1fr}}
 .tblwrap{overflow-x:auto}
-table.live{width:100%;min-width:600px;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:12px}
+table.live{width:100%;min-width:640px;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:12px}
 table.live td.pname{max-width:180px}
 table.live .arr{display:inline-block;width:11px;visibility:hidden}
 table.live th.sorted .arr{visibility:visible}
@@ -154,6 +154,27 @@ nav.tabs button:hover{background:var(--btn-hover)}
 nav.tabs button.on{background:var(--accent-soft);color:var(--accent-hover);border-color:var(--accent-soft-border)}
 .pane{display:none}
 .pane.on{display:block}
+.alnav{position:sticky;top:0;z-index:5;background:var(--page);padding:8px 0 10px;margin:0 0 8px;
+  display:flex;gap:14px;align-items:center;flex-wrap:wrap;border-bottom:1px solid var(--border)}
+.seg{display:inline-flex}
+.seg button{all:unset;box-sizing:border-box;font:700 10px/1 var(--sans);letter-spacing:.05em;text-transform:uppercase;
+  color:var(--ink);background:var(--btn);padding:6px 12px;cursor:pointer;border:1px solid var(--border-strong);
+  box-shadow:var(--bevel-raised);transition:background var(--motion-fast) ease-out}
+.seg button:first-child{border-radius:4px 0 0 4px}
+.seg button:last-child{border-radius:0 4px 4px 0}
+.seg button:not(:first-child){margin-left:-1px}
+.seg button:hover{background:var(--btn-hover)}
+.seg button.on{background:var(--accent-soft);color:var(--accent-hover);border-color:var(--accent-soft-border);box-shadow:none}
+.seg button:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;position:relative}
+.ychips{display:flex;gap:4px;flex-wrap:wrap}
+.ychip{all:unset;box-sizing:border-box;font:600 10px/1 var(--sans);font-variant-numeric:tabular-nums;color:var(--muted);
+  border:1px solid var(--border);border-radius:2px;background:var(--page);padding:4px 6px;cursor:pointer;
+  transition:background var(--motion-fast) ease-out}
+.ychip:hover{background:var(--btn-hover);color:var(--ink)}
+.ychip:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+section.year{scroll-margin-top:56px}
+#pane-almanac.mode-season .cut[data-cut="career"]{display:none}
+#pane-almanac.mode-career .cut[data-cut="season"]{display:none}
 .award{display:inline-block;font:700 9px/1.4 var(--sans);letter-spacing:.05em;
   color:var(--accent-hover);background:var(--accent-soft);
   border:1px solid var(--accent-soft-border);border-radius:2px;padding:0 3px;
@@ -276,6 +297,7 @@ const COLS_CAREER = [
   ['rk','#',null,'r',td.rank], ['name','Player', e=>NAMES[e.id]||'', '', td.name],
   ['link','',null,'',td.link], ['pos','Pos', e=>e.pos, '', td.pos],
   ['team','Team', e=>e.team||'', '', td.team], ['elo','Elo', e=>e.elo, 'r', td.elo],
+  ['selo','Season', e=>e.selo, 'r', td.selo],
   ['d30','30d', e=>e.d30, 'r', td.d30], ['d90','90d', e=>e.d90, 'r', td.d90],
   ['sp','Trend',null,'',td.spark],
 ];
@@ -430,19 +452,26 @@ if (DATA.alltime_fresh){
           boardHTML(DATA.alltime_fresh[cat], color) + '</div>';
   }
 }
-av += `</div><h3 class="view">Filthiest pitches in baseball — right now</h3>
+panes.alltime = av + '</div>';
+
+/* — Filthiest pitches: current form, so it lives on the Season tab — */
+let fp = `<h3 class="view">Filthiest pitches in baseball — right now</h3>
   <div class="card"><div class="tblwrap"><table class="pitches">
   <tr><th></th><th>Pitcher</th><th></th><th>Pitch</th><th>Thrown since ’25</th><th style="text-align:right">Elo</th></tr>`;
 PITCHES.forEach((p, i) => {
-  av += `<tr><td class="rank">${i+1}</td><td class="pname">${p.name}</td><td>${brefLink(p.id)}</td>`+
+  fp += `<tr><td class="rank">${i+1}</td><td class="pname">${p.name}</td><td>${brefLink(p.id)}</td>`+
         `<td>${p.pitch}</td><td>${p.n.toLocaleString()}</td><td class="elo" style="text-align:right">${p.elo}</td></tr>`;
 });
-panes.alltime = av + '</table></div></div>';
+panes.season += fp + '</table></div></div>';
 
 /* — Almanac (yearly boards) — */
 const years = Object.keys(DATA.yearly).sort().reverse();
 const latest = years[0];
-let yv = '';
+let yv = `<div class="alnav"><div class="seg" id="alseg">`+
+  `<button data-mode="season" class="on">Season</button>`+
+  `<button data-mode="career">Career</button>`+
+  `<button data-mode="all">Everything</button></div>`+
+  `<div class="ychips">` + years.map(y=>`<button class="ychip" data-year="${y}">${y}</button>`).join('') + `</div></div>`;
 for (const y of years){
   const cuts = DATA.yearly[y].xrv;
   const aw = (DATA.awards||{})[y];
@@ -453,9 +482,10 @@ for (const y of years){
                  ['peak','Peaks — highest touched this year']];
   const groups = {fresh: `Season Elo <span class="sub">— everyone restarts at 1500 in spring</span>`,
                   mid: `Career Elo <span class="sub">— continuous, carries winter to winter</span>`};
-  yv += `<section class="year"><h2 class="year">${y}</h2>`;
+  yv += `<section class="year" id="yr-${y}"><h2 class="year">${y}</h2><div class="cut" data-cut="season">`;
   for (const [v, label] of views){
     if (!cuts[v]) continue;
+    if (v === 'mid') yv += `</div><div class="cut" data-cut="career">`;
     if (groups[v]) yv += `<h3 class="group">${groups[v]}</h3>`;
     yv += `<h3 class="view">${label}</h3><div class="boards">`;
     for (const [cat, title, color] of CATS){
@@ -479,7 +509,7 @@ for (const y of years){
     }
     yv += '</div>';
   }
-  yv += '</section>';
+  yv += '</div></section>';
 }
 panes.almanac = yv;
 
@@ -527,7 +557,7 @@ panes.about = `
 <li><b>Half deserved, half real</b> — contact counts 50% what happened, 50% what the physics earned; the split was fit by prediction, not taste</li>
 <li><b>Memory of ~100 matches</b> — a few weeks for regulars; older play fades out</li>
 <li><b>Winters freeze</b> — tested on ten offseasons; freezing beat every alternative</li>
-<li><b>Moves rated too</b> — each pitch shape keeps its own record (Filthiest pitches, on the All-time tab)</li>
+<li><b>Moves rated too</b> — each pitch shape keeps its own record (Filthiest pitches, on the Season tab)</li>
 </ul></div>
 <h3 class="view">Reading the scale</h3>
 <div class="card"><ul>
@@ -596,6 +626,22 @@ function showTab(k){
 document.querySelector('nav.tabs').addEventListener('click', ev=>{
   const b = ev.target.closest('button[data-tab]');
   if (b) showTab(b.dataset.tab);
+});
+const alPane = document.getElementById('pane-almanac');
+alPane.classList.add('mode-season');
+alPane.addEventListener('click', ev => {
+  const m = ev.target.closest('#alseg button');
+  if (m){
+    alPane.classList.remove('mode-season','mode-career','mode-all');
+    alPane.classList.add('mode-' + m.dataset.mode);
+    document.querySelectorAll('#alseg button').forEach(b=>b.classList.toggle('on', b===m));
+    return;
+  }
+  const yc = ev.target.closest('.ychip');
+  if (yc){
+    const el = document.getElementById('yr-' + yc.dataset.year);
+    if (el) el.scrollIntoView({behavior:'smooth', block:'start'});
+  }
 });
 showTab(TABS.some(([k])=>'#'+k===location.hash) ? location.hash.slice(1) : 'season');
 if (CUR.length){
