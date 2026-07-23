@@ -179,7 +179,7 @@ nav.tabs button.on{background:var(--accent-soft);color:var(--accent-hover);borde
 </style>
 <div class="wrap">
 <h1>Showdown Elo<a class="tag" href="https://tanji.systems/">Tanji Systems</a></h1>
-<p>live MLB player ratings · every at-bat is a rated chess match · 1500 = league average</p>
+<p>live MLB player ratings · every at-bat is a rated chess match · 1500 = league average<span id="asof"></span></p>
 <div id="doc"></div>
 <footer>
   Ratings begin April 2015 (first Statcast season) · updated nightly ·
@@ -200,6 +200,8 @@ const CATS = [['B','Most Dangerous Hitters','var(--tone-bat)'],
               ['SP','Most Dominant Starters','var(--accent)'],
               ['RP','Most Dominant Relievers','var(--accent)']];
 const disp = r => Math.round(1500 + r*SCALE);
+document.getElementById('asof').textContent = ' · data through ' +
+  new Date(DATA.asof+'T12:00:00Z').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
 const fmtWk = w => new Date(w+'T12:00:00Z').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'2-digit'}).replace(', ', ' ’');
 const fmtD = d => { const v = Math.round(d*SCALE); return v === 0 ? '<span class="zero">–</span>'
   : v > 0 ? `<span class="up">▲${v}</span>` : `<span class="dn">▼${-v}</span>`; };
