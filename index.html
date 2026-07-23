@@ -10,6 +10,8 @@
 <meta property="og:image" content="https://showdown.tanji.systems/og.png">
 <meta property="og:url" content="https://showdown.tanji.systems/">
 <link rel="canonical" href="https://showdown.tanji.systems/">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <style>
@@ -39,6 +41,7 @@ body{background:var(--page);color:var(--ink);margin:0;padding:24px 16px 48px;
 .wrap{max-width:1080px;margin:0 auto}
 h1{font:600 22px/1.2 var(--serif);font-variant:small-caps;letter-spacing:.06em;
   color:var(--ink-strong);margin:0 0 2px}
+h1 .mark{vertical-align:-2px;margin-right:8px}
 h1 .tag{display:inline-block;text-decoration:none;cursor:pointer;background:var(--accent-soft);color:var(--accent-hover);
   border:1px solid var(--accent-soft-border);
   font:700 9px/1.1 var(--sans);letter-spacing:.06em;text-transform:uppercase;
@@ -129,6 +132,7 @@ table.live th.sorted{background:var(--accent-soft);color:var(--accent-hover);
 table.live th.sorted:hover{background:var(--accent-soft)}
 table.live th.r button, table.live th.r .h, table.live td.r{text-align:right}
 table.live td{padding:4px 8px;border-bottom:1px solid var(--sunken)}
+table.live tr.tier-b{background:rgba(28,26,22,.035)}
 table.live tbody tr:hover{background:var(--accent-tint)}
 svg.spark{display:block}
 svg.spark polyline{fill:none;stroke:var(--accent);stroke-width:1.5}
@@ -293,7 +297,7 @@ ol.board li.off .pname, ol.board li.off .elo{color:var(--muted)}
 }
 </style>
 <main class="wrap">
-<h1>Showdown Elo<a class="tag" href="https://tanji.systems/">Tanji Systems</a></h1>
+<h1><svg class="mark" width="20" height="20" viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="hg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3d9663"/><stop offset=".55" stop-color="#217346"/><stop offset="1" stop-color="#164f30"/></linearGradient></defs><g transform="rotate(45 16 16)"><rect x="8" y="8" width="16" height="16" rx="3" fill="url(#hg)" stroke="#113d25" stroke-width="1"/><rect x="9.5" y="9.5" width="13" height="6" rx="2.5" fill="rgba(255,255,255,.28)"/></g></svg>Showdown Elo<a class="tag" href="https://tanji.systems/">Tanji Systems</a></h1>
 <p>live MLB player ratings · every at-bat is a rated chess match · 1500 = league average<span id="asof"></span></p>
 <div class="psearch"><input id="psearch" type="search" placeholder="find a player…" autocomplete="off" aria-label="Find a player"><div class="hits" id="phits"></div></div>
 <div id="doc"></div>
@@ -438,7 +442,18 @@ function renderLive(cid){
             `<span class="arr">${st.key===k && st.dir<0 ? '▴' : '▾'}</span></button></th>`
           : `<th scope="col" class="${cls}"><span class="h">${label}</span></th>`).join('') +
     `</tr></thead><tbody>` +
-    list.map((e,i)=>`<tr${e.selo===undefined?' class="inact"':''}>`+st.cols.map(c=>c[4](e,i,st)).join('')+'</tr>').join('') +
+    (() => {
+      let tiers = null;
+      if (st.key === 'elo' || st.key === 'selo'){        // 15-pt bands from the leader: rows in a band are ~ties
+        const v = col[2];
+        const first = disp(v(list[0]));
+        tiers = list.map(e => Math.floor(Math.abs(first - disp(v(e))) / 15));
+      }
+      return list.map((e,i)=>{
+        const cls = [e.selo===undefined?'inact':'', tiers && tiers[i]%2 ? 'tier-b' : ''].filter(Boolean).join(' ');
+        return `<tr${cls?` class="${cls}"`:''}>`+st.cols.map(c=>c[4](e,i,st)).join('')+'</tr>';
+      }).join('');
+    })() +
     '</tbody></table></div>';
 }
 document.addEventListener('click', ev => {
@@ -765,7 +780,7 @@ panes.about = `
 <li><b>1500</b> — league average</li>
 <li><b>1560+</b> — All-Star tier, top 10%</li>
 <li><b>1600+</b> — elite, top 1%</li>
-<li><b>±9</b> — daily wobble; gaps under 15 are ties</li>
+<li><b>±9</b> — daily wobble; gaps under 15 are ties — table rows band by tied tier</li>
 <li><b>°</b> — provisional: under 1,000 career matches; young ratings run hot and settle with play</li>
 <li><b>25 points</b> — about one win per season: 650 at-bats of that edge &asymp; 10 runs, the classic runs-per-win</li>
 <li><b>Season Elo</b> — separate track, resets to 1500 each spring; a live race standing, not a season award — season high-water marks live in the Almanac</li>
