@@ -344,7 +344,7 @@ const panes = {};
 let hv = `<h3 class="view">As of ${DATA.asof} · career rating · click a column to sort</h3><div class="heroes">`;
 for (const [list, lbl] of [[hitters,'Best hitter right now'],[sps,'Best starter'],[rps,'Best reliever']]){
   const e = list[0];
-  if (e) hv += `<div class="hero"><div class="lbl">${lbl}</div><div class="who">${NAMES[e.id]||e.id}</div>`+
+  if (e) hv += `<div class="hero"><div class="lbl">${lbl}</div><div class="who">${NAMES[e.id]||e.id} ${brefLink(e.id)}</div>`+
     `<div class="big">${disp(e.elo)}</div><div class="sub">season ${disp(e.selo)} · 30d ${fmtD(e.d30)}</div></div>`;
 }
 hv += '</div>';
@@ -357,7 +357,7 @@ let sv = `<h3 class="view">Fresh-start rating: everyone begins the season at 150
   the ${DATA.asof.slice(0,4)} race as it stands today, not a season award</h3><div class="heroes">`;
 for (const [list, lbl] of [[hitters,'Race leader — hitters'],[sps,'Race leader — starters'],[rps,'Race leader — relievers']]){
   const e = list.slice().sort((a,b)=>b.selo-a.selo)[0];
-  if (e) sv += `<div class="hero"><div class="lbl">${lbl}</div><div class="who">${NAMES[e.id]||e.id}</div>`+
+  if (e) sv += `<div class="hero"><div class="lbl">${lbl}</div><div class="who">${NAMES[e.id]||e.id} ${brefLink(e.id)}</div>`+
     `<div class="big">${disp(e.selo)}</div><div class="sub">career ${disp(e.elo)} · 30d ${fmtD(e.d30)}</div></div>`;
 }
 sv += '</div>';
