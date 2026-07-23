@@ -461,13 +461,8 @@ hv += '</div>';
 const clubR = (1600 - 1500) / SCALE;
 const club = [...allB, ...allS, ...allR].filter(e=>e.elo >= clubR).sort((a,b)=>b.elo-a.elo);
 if (club.length){
-  hv += `<h3 class="view">The 1600 club — elite territory, every role on one scale (greyed = sidelined)</h3><div class="movers">`;
-  for (let i = 0; i < club.length; i += 10){
-    const part = club.slice(i, i+10);
-    hv += `<div class="card"><h4><span class="dot" style="background:var(--accent)"></span>${i+1}–${i+part.length}</h4>`+
-      boardHTML(part.map(e=>({id:e.id, r:e.elo, off:e.selo===undefined})), 'var(--accent)', true) + '</div>';
-  }
-  hv += '</div>';
+  hv += `<h3 class="view">The 1600 club — elite territory, every role on one scale (greyed = sidelined)</h3>`+
+        `<div class="card" id="tblClub"></div>`;
 }
 hv += `<h3 class="view">Top 100 hitters</h3><div class="card" id="tblH"></div>`;
 hv += `<h3 class="view">Top 50 starters</h3><div class="card" id="tblS"></div>`;
@@ -792,6 +787,7 @@ alPane.addEventListener('click', ev => {
 });
 showTab(TABS.some(([k])=>'#'+k===location.hash) ? location.hash.slice(1) : 'season');
 if (CUR.length){
+  if (club.length) initTable('tblClub', club, COLS_CAREER, 'elo');
   initTable('tblH', allB.slice(0,100), COLS_CAREER, 'elo');
   initTable('tblS', allS.slice(0,50), COLS_CAREER, 'elo');
   initTable('tblR', allR.slice(0,25), COLS_CAREER, 'elo');
