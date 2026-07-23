@@ -2,6 +2,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Showdown Elo — live MLB player ratings</title>
+<meta name="description" content="Showdown Elo — live MLB player ratings. Every at-bat is a rated chess match; 1500 = league average. Rebuilt nightly from Statcast.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='9' y='9' width='14' height='14' rx='2' transform='rotate(45 16 16)' fill='%23217346'/%3E%3C/svg%3E">
+<meta property="og:title" content="Showdown Elo — live MLB player ratings">
+<meta property="og:description" content="Every at-bat is a rated chess match. 1500 = league average. Rebuilt nightly from Statcast.">
+<meta property="og:image" content="https://showdown.tanji.systems/og.png">
+<meta property="og:url" content="https://showdown.tanji.systems/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
 <style>
 /* keaiui tokens (packages/keaiui/src/tokens.css), light only by design */
 :root{
@@ -362,7 +370,21 @@ for (const ps of ['C','1B','2B','3B','SS','LF','CF','RF','DH']){
   sv += `<div class="card"><h4><span class="dot" style="background:var(--accent)"></span>${ps}</h4>`+
     boardHTML(grp.map(e=>({id:e.id, r:e.selo})), 'var(--accent)', true) + '</div>';
 }
-panes.season = sv + '</div>';
+sv += '</div>';
+
+/* — Rookie watch: provisional ratings still settling — */
+const rooks = CUR.filter(e=>e.nm < 1000 && e.selo !== 0);
+const rB = rooks.filter(e=>e.role==='B').sort((a,b)=>b.selo-a.selo).slice(0,10);
+const rP = rooks.filter(e=>e.role!=='B').sort((a,b)=>b.selo-a.selo).slice(0,10);
+if (rB.length || rP.length){
+  sv += `<h3 class="view">Rookie watch — provisional&deg; season ratings, under 1,000 career matches</h3><div class="movers">`;
+  if (rB.length) sv += `<div class="card"><h4><span class="dot" style="background:var(--tone-bat)"></span>Hitters</h4>`+
+    boardHTML(rB.map(e=>({id:e.id, r:e.selo})), 'var(--tone-bat)', true) + '</div>';
+  if (rP.length) sv += `<div class="card"><h4><span class="dot" style="background:var(--accent)"></span>Pitchers</h4>`+
+    boardHTML(rP.map(e=>({id:e.id, r:e.selo})), 'var(--accent)', true) + '</div>';
+  sv += '</div>';
+}
+panes.season = sv;
 
 /* — Movers — */
 const active = CUR.filter(e=>e.d30 !== 0 || e.d90 !== 0);
@@ -503,7 +525,7 @@ panes.about = `
 <li><b>Half deserved, half real</b> — contact counts 50% what happened, 50% what the physics earned; the split was fit by prediction, not taste</li>
 <li><b>Memory of ~100 matches</b> — a few weeks for regulars; older play fades out</li>
 <li><b>Winters freeze</b> — tested on ten offseasons; freezing beat every alternative</li>
-<li><b>Moves rated too</b> — each pitch shape keeps its own record (see Filthiest pitches)</li>
+<li><b>Moves rated too</b> — each pitch shape keeps its own record (Filthiest pitches, on the All-time tab)</li>
 </ul></div>
 <h3 class="view">Reading the scale</h3>
 <div class="card"><ul>
@@ -512,7 +534,7 @@ panes.about = `
 <li><b>1600+</b> — elite, top 1%</li>
 <li><b>±9</b> — daily wobble; gaps under 15 are ties</li>
 <li><b>°</b> — provisional: under 1,000 career matches; young ratings run hot and settle with play</li>
-<li><b>25 points</b> — about one win per season</li>
+<li><b>25 points</b> — about one win per season: 650 at-bats of that edge &asymp; 10 runs, the classic runs-per-win</li>
 <li><b>Season Elo</b> — separate track, resets to 1500 each spring; a live race standing, not a season award — season high-water marks live in the Almanac</li>
 </ul></div>
 <h3 class="view">FAQ</h3>
