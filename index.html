@@ -9,6 +9,7 @@
 <meta property="og:description" content="Every at-bat is a rated chess match. 1500 = league average. Rebuilt nightly from Statcast.">
 <meta property="og:image" content="https://showdown.tanji.systems/og.png">
 <meta property="og:url" content="https://showdown.tanji.systems/">
+<link rel="canonical" href="https://showdown.tanji.systems/">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <style>
@@ -473,6 +474,7 @@ for (const [list, lbl] of [[hitters,'Best hitter right now'],[sps,'Best starter'
     `<div class="big">${disp(e.elo)}</div><div class="sub">season ${disp(e.selo)} · 30d ${fmtD(e.d30)}</div></div>`;
 }
 hv += '</div>';
+hv += `<p style="font-size:11px;color:var(--muted);margin:0 0 16px">From the Discussions: <a href="#talk" class="txt" onclick="showTab('talk')" style="color:var(--accent);font-weight:600;text-decoration:none">The week we were wrong</a> — an outside review, a silent bug, and what survived it</p>`;
 
 /* — The 1600 club, per role (greyed = sidelined) — */
 const CLUB_R = (1600 - 1500) / SCALE;
@@ -681,6 +683,24 @@ panes.almanac = yv;
 
 /* — Discussions: questions the ratings raised, answered by test — */
 panes.talk = `
+<h3 class="view">The week we were wrong · Jul 23</h3>
+<div class="card"><ul>
+<li><b>The find</b> — an outside review caught a silent grouping bug: 96% of at-bat totals were summing the wrong pitches</li>
+<li><b>Why nobody noticed</b> — every pitch value was right, only the grouping was shuffled; the boards still looked like baseball</li>
+<li><b>The fix</b> — one line, four files, and a nightly test that fails the publish if it ever regresses</li>
+<li><b>What survived</b> — the 50/50 craft blend re-won its fit on corrected data, more cleanly than before</li>
+<li><b>What didn&rsquo;t</b> — the old leaderboard; &Aacute;lvarez took the top spot and the inflated pitcher peaks deflated</li>
+<li><b>The lesson</b> — plausible is not correct; every number here survived being attacked, or it isn&rsquo;t here</li>
+</ul></div>
+<h3 class="view">The great collapses · Jul 23</h3>
+<div class="card"><ul>
+<li><b>What this is</b> — the biggest peak-to-trough falls since 2015, straight from the rating series (click any name for the picture)</li>
+<li><b>Bellinger</b> — 1610 in May 2019, an MVP at 23; 1488 by mid-2022 — the steepest famous fall the rating ever tracked</li>
+<li><b>Arrieta</b> — 1601 the April after his Cy Young; 145 points gone by the end</li>
+<li><b>Betts</b> — 1657 in April 2024, then a 121-point slide into 2025; the current race says the argument isn&rsquo;t over</li>
+<li><b>Votto and Miggy</b> — twin ~1600-to-1490 aging curves, a decade of greatness exhaled over six seasons</li>
+<li><b>The pattern</b> — collapses are slow; the rating never saw a cliff, only long descents nobody called in time</li>
+</ul></div>
 <h3 class="view">Born from a failed betting model · Jul 22</h3>
 <div class="card"><ul>
 <li><b>The origin</b> — this site began as a betting model: strikeout props, hit props, a full pipeline</li>
