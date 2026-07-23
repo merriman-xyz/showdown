@@ -253,7 +253,7 @@ section.year{scroll-margin-top:56px}
 <footer>
   Ratings begin April 2015 (first Statcast season) · updated nightly ·
   <a href="#about" class="txt" onclick="showTab('about')">how it works &amp; how it was built</a> ·
-  data: MLB Statcast via pybaseball · the ↗ opens a player&rsquo;s reference page ·
+  data: MLB Statcast via pybaseball · the ↗&#xFE0E; opens a player&rsquo;s reference page ·
   not affiliated with Major League Baseball ·
   a <a class="txt" href="https://tanji.systems/">Tanji Systems</a> project
   by <a class="txt" href="https://merriman.xyz">Brian Merriman</a>
@@ -280,7 +280,7 @@ function brefLink(id){
   const url = br ? `https://www.baseball-reference.com/players/${br[0]}/${br}.shtml`
                  : `https://www.mlb.com/player/${id}`;
   return `<a class="bref" href="${url}" target="_blank" rel="noopener"`+
-    ` title="${br ? 'Baseball-Reference' : 'MLB.com'}" aria-label="${br ? 'Baseball-Reference' : 'MLB.com'} page">↗</a>`;
+    ` title="${br ? 'Baseball-Reference' : 'MLB.com'}" aria-label="${br ? 'Baseball-Reference' : 'MLB.com'} page">↗&#xFE0E;</a>`;
 }
 function boardHTML(list, color, compact, badges){
   const rs = list.map(e=>e.r), lo = Math.min(...rs), hi = Math.max(...rs);
