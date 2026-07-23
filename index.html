@@ -351,7 +351,10 @@ function sparkSVG(id){
   const v = s.map((x,i)=>[i,x]).filter(p=>p[1]!==null);
   if (v.length < 3) return empty;
   const xs = v.map(p=>p[0]), ys = v.map(p=>p[1]);
-  const lo = Math.min(...ys), hi = Math.max(...ys), sp = (hi-lo)||1e-4;
+  let lo = Math.min(...ys), hi = Math.max(...ys);
+  const FLOOR = 60/390;                       // 60 display points min window
+  if (hi - lo < FLOOR){ const mid = (hi+lo)/2; lo = mid - FLOOR/2; hi = mid + FLOOR/2; }
+  const sp = (hi-lo)||1e-4;
   const X = i => 2 + 86*(i-xs[0])/((xs[xs.length-1]-xs[0])||1);
   const Y = r => 19 - 16*(r-lo)/sp;
   const pts = v.map(p=>`${X(p[0]).toFixed(1)},${Y(p[1]).toFixed(1)}`).join(' ');
@@ -444,6 +447,11 @@ document.addEventListener('click', ev => {
   if (st.key === b.dataset.k) st.dir = -st.dir;
   else { st.key = b.dataset.k; st.dir = 1; }
   renderLive(b.dataset.t);
+  const el = document.getElementById(b.dataset.t);
+  if (el && el.querySelector){
+    const nb = el.querySelector(`button[data-t="${b.dataset.t}"][data-k="${st.key}"]`);
+    if (nb && nb.focus) nb.focus();
+  }
 });
 
 const CUR = (DATA.current||[]).slice().sort((a,b)=>b.elo-a.elo);
@@ -499,13 +507,33 @@ for (const ps of ['C','1B','2B','3B','SS','LF','CF','RF','DH']){
 }
 sv += '</div>';
 
-/* — Season peaks: highest fresh-start touched this year — */
-const YCUR = DATA.yearly && DATA.yearly[YR];
-if (YCUR && YCUR.xrv.fresh_peak){
-  sv += `<h3 class="view">${YR} season peaks — highest touched, any week</h3><div class="boards">`;
-  for (const [cat, title, color] of CATS){
-    sv += `<div class="card"><h4><span class="dot" style="background:${color}"></span>${title}</h4>`+
-      boardHTML(YCUR.xrv.fresh_peak[cat], color, false, null, cat==='B'?'b':'p') + '</div>';
+/* — Hottest stretches: biggest 4-week climb this season (peak form, not accumulation) — */
+function bestSurge(e){
+  const s = DATA.series && DATA.series['' + e.id + (e.role==='B'?'b':'p')];
+  if (!s) return null;
+  const pts = [];
+  for (let k = 0; k < s.length; k += 2)
+    if (DATA.weeks[s[k]].slice(0,4) === YR) pts.push([s[k], s[k+1]]);
+  if (pts.length < 2) return null;
+  let best = null;
+  for (let a = 0; a < pts.length; a++)
+    for (let b = a+1; b < pts.length && pts[b][0] - pts[a][0] <= 5; b++){
+      const g = pts[b][1] - pts[a][1];
+      if (!best || g > best.g) best = {g, end: pts[b][0]};
+    }
+  return best;
+}
+{
+  const surged = list => list
+    .map(e => ({e, s: bestSurge(e)}))
+    .filter(x => x.s && x.s.g > 0)
+    .sort((a,b) => b.s.g - a.s.g).slice(0,10)
+    .map(x => ({...x.e, sg: x.s.g/1000}));
+  sv += `<h3 class="view">Hottest stretches of ${YR} — biggest four-week climb, current season Elo alongside</h3><div class="boards">`;
+  for (const [list, title, color] of [[hitters,'Hitters','var(--tone-bat)'],[sps,'Starters','var(--accent)'],[rps,'Relievers','var(--accent)']]){
+    const top = surged(list);
+    if (top.length)
+      sv += moverCard(title, top, e=>e.sg, color, e=>e.selo);
   }
   sv += '</div>';
 }
