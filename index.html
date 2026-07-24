@@ -271,9 +271,9 @@ button.xbtn svg{width:10.5px;height:10.5px;display:block}
 .pchart polyline.frozen{stroke:var(--border-strong);stroke-width:1.3;opacity:.75}
 .pchart line.grid{stroke:var(--sunken);stroke-width:1}
 .pchart line.mid{stroke:var(--border-strong);stroke-width:1;stroke-dasharray:3 3}
-.pchart line.cross{stroke:var(--border-strong);stroke-width:1;stroke-dasharray:2 2}
+.pchart line.cross, .cchart line.cross{stroke:var(--border-strong);stroke-width:1;stroke-dasharray:2 2}
 .pchart circle{fill:var(--accent)}
-.pchart circle.crossdot{fill:var(--accent);stroke:var(--page);stroke-width:1.5}
+.pchart circle.crossdot, .cchart circle.crossdot{fill:var(--accent);stroke:var(--page);stroke-width:1.5}
 .pchart text{font:9px var(--sans);fill:var(--muted)}
 .pcard .bd{position:relative}
 .ctip{position:absolute;z-index:3;pointer-events:none;white-space:nowrap;
@@ -319,7 +319,7 @@ ul.duels .res{font-variant-numeric:tabular-nums;white-space:nowrap}
 .pchart line.ref{stroke:var(--border-strong);stroke-width:1;stroke-dasharray:3 3}
 .pchart polyline.bat{stroke:var(--tone-bat)}
 .pchart circle.bat{fill:var(--tone-bat)}
-.cfig{background:var(--page);border:1px solid var(--border);border-radius:4px;padding:8px 10px}
+.cfig{position:relative;background:var(--page);border:1px solid var(--border);border-radius:4px;padding:8px 10px}
 ol.board.surge li{grid-template-columns:16px minmax(0,1fr) 18px 70px 42px}
 ol.board.surge .rng{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums;
   text-align:right;white-space:nowrap}
@@ -787,10 +787,38 @@ panes.almanac = yv;
 
 
 /* — Discussions: questions the ratings raised, answered by test — */
+/* the peak article's numbers are computed from DATA nightly, never hardcoded —
+   the replay reshuffles history a point or two and static copy would drift */
+const TALK_PEAKS = (() => {
+  const out = [];
+  for (const pk in DATA.series){
+    const s = DATA.series[pk];
+    if (s.length < 80) continue;
+    let hi = -1e9, hiI = 0;
+    for (let k = 0; k < s.length; k += 2) if (s[k+1] > hi){ hi = s[k+1]; hiI = s[k]; }
+    out.push({pk, hi, hiI});
+  }
+  out.sort((a,b) => b.hi - a.hi);
+  return out.slice(0, 5);
+})();
+const talkElo = v => Math.round(1500 + v*SCALE/1000);
+const talkMY = i => new Date(DATA.weeks[i]+'T12:00:00Z')
+  .toLocaleDateString('en-US',{month:'short'}) + ' ’' + DATA.weeks[i].slice(2,4);
+const talkLong = i => new Date(DATA.weeks[i]+'T12:00:00Z')
+  .toLocaleDateString('en-US',{month:'long', day:'numeric', year:'numeric'});
+const TP1 = TALK_PEAKS[0], TP1ELO = talkElo(TP1.hi), TP1NAME = NAMES[TP1.pk.slice(0,-1)] || TP1.pk;
+const TPPITCH = TALK_PEAKS.filter(x => x.pk.endsWith('p'));
+const talkStat = key => {
+  const s = DATA.series[key] || [];
+  let hi = -1e9, hiI = 0, last = 0;
+  for (let k = 0; k < s.length; k += 2){ if (s[k+1] > hi){ hi = s[k+1]; hiI = s[k]; } last = s[k+1]; }
+  return {hi: talkElo(hi), hiI, last: talkElo(last)};
+};
+const SHO_B = talkStat('660271b'), SHO_P = talkStat('660271p');
 panes.talk = `
 <div class="ychips talktoc">
 <button class="ychip" data-goto="t-fall">The great collapses</button>
-<button class="ychip" data-goto="t-peak">The 1697</button>
+<button class="ychip" data-goto="t-peak">The ${TP1ELO}</button>
 <button class="ychip" data-goto="t-alonso">The Alonso question</button>
 <button class="ychip" data-goto="t-winter">Winter freeze</button>
 <button class="ychip" data-goto="t-ohtani">The two Ohtanis</button>
@@ -802,23 +830,19 @@ panes.talk = `
 <div class="movers" id="collapses"></div>
 <div class="take"><b>The pattern</b> — collapses are slow. The rating never saw a cliff, only long descents nobody called in time.</div>
 </div>
-<h3 class="view" id="t-peak">1697 — the highest level ever held <span class="when">Jul 23</span></h3>
+<h3 class="view" id="t-peak">${TP1ELO} — the highest level ever held <span class="when">Jul 23</span></h3>
 <p class="talkintro">Eleven seasons of peaks, and the one that stands above them all.</p>
 <div class="card talk-art">
-<p>On May 5, 2025, <span data-pk="592450b" tabindex="0" role="button">Aaron Judge</span> reached 1697 — the highest rating any player has held in the data. A peak here is not a hot week: the rating remembers about a hundred matches, so a number like this means months of dominating every at-bat against live competition.</p>
+<p>On ${talkLong(TP1.hiI)}, <span data-pk="${TP1.pk}" tabindex="0" role="button">${TP1NAME}</span> reached ${TP1ELO} — the highest rating any player has held in the data. A peak here is not a hot week: the rating remembers about a hundred matches, so a number like this means months of dominating every at-bat against live competition.</p>
 <div id="peakfig">
 <div id="peakchart"></div>
-<p class="figcap">Aaron Judge, career line — hover for week and rating. The dashed rule is 1600, elite; the extra dot is the May&nbsp;5,&nbsp;&rsquo;25 peak.</p>
+<p class="figcap">${TP1NAME}, career line — hover for week and rating. The dashed rule is 1600, elite; the extra dot is the ${talkMY(TP1.hiI)} peak.</p>
 </div>
 <p>The all-time board, for the record:</p>
 <ul class="duels">
-<li><span data-pk="592450b" tabindex="0" role="button">Aaron Judge</span><span class="res">1697 · May &rsquo;25</span></li>
-<li><span data-pk="665742b" tabindex="0" role="button">Juan Soto</span><span class="res">1678 · Sep &rsquo;21</span></li>
-<li><span data-pk="545361b" tabindex="0" role="button">Mike Trout</span><span class="res">1664 · Jun &rsquo;19</span></li>
-<li><span data-pk="594798p" tabindex="0" role="button">Jacob deGrom</span><span class="res">1659 · Sep &rsquo;22</span></li>
-<li><span data-pk="605141b" tabindex="0" role="button">Mookie Betts</span><span class="res">1657 · Apr &rsquo;24</span></li>
+${TALK_PEAKS.map(x => `<li><span data-pk="${x.pk}" tabindex="0" role="button">${NAMES[x.pk.slice(0,-1)]||x.pk}</span><span class="res">${talkElo(x.hi)} · ${talkMY(x.hiI)}</span></li>`).join('')}
 </ul>
-<div class="take"><b>The shape of it</b> — four hitters and one pitcher: sustaining dominance over 650 at-bats is a taller mountain than thirty starts, and deGrom is the only pitcher who ever climbed this high.</div>
+<div class="take"><b>The shape of it</b> — ${5-TPPITCH.length} hitters and ${TPPITCH.length||'no'} pitcher${TPPITCH.length===1?'':'s'}: sustaining dominance over 650 at-bats is a taller mountain than thirty starts${TPPITCH.length===1?` — ${NAMES[TPPITCH[0].pk.slice(0,-1)]} is the only pitcher who ever climbed this high`:''}.</div>
 </div>
 <h3 class="view" id="t-alonso">Does hitting hard rule the ratings? <span class="when">Jul 23</span></h3>
 <p class="talkintro">The day the ratings learned that soft contact can be a skill.</p>
@@ -853,9 +877,9 @@ panes.talk = `
 <p>Every player here holds one rating. <span data-pk="660271b" tabindex="0" role="button">Shohei Ohtani</span> holds two — the system rates the at-bat duel from both chairs, and he sits in both, a full hitter&rsquo;s career and a full pitcher&rsquo;s career running on the same clock.</p>
 <div id="shofig">
 <div id="shochart"></div>
-<p class="figcap"><span class="dot" style="background:var(--tone-bat)"></span> batting · <span class="dot" style="background:var(--accent)"></span> pitching — both careers on one clock. Batting peaked at 1639 in May &rsquo;24; the flat stretch on the pitching line is the elbow, frozen while he only hit.</p>
+<p class="figcap"><span class="dot" style="background:var(--tone-bat)"></span> batting · <span class="dot" style="background:var(--accent)"></span> pitching — both careers on one clock. Batting peaked at ${SHO_B.hi} in ${talkMY(SHO_B.hiI)}; the flat stretch on the pitching line is the elbow, frozen while he only hit.</p>
 </div>
-<p>Today the batting line stands at 1603 and the pitching line at 1579 — and the pitching line&rsquo;s all-time high is this summer: 1590 in June, two years after the surgery.</p>
+<p>Today the batting line stands at ${SHO_B.last} and the pitching line at ${SHO_P.last} — and the pitching line&rsquo;s all-time high, ${SHO_P.hi}, came in ${talkMY(SHO_P.hiI)}, two years after the surgery.</p>
 <div class="take"><b>No precedent</b> — nobody else in eleven seasons has held two live ratings at once.</div>
 </div>`;
 
@@ -1043,7 +1067,7 @@ function chartSVG(pk, ent, opts = {}){
   };
   const pts = load(pk);
   if (!pts) return '<p class="meta">not enough rated weeks for a chart yet</p>';
-  const extras = (opts.extra || []).map(x => ({cls: x.cls, pts: load(x.pk)})).filter(x => x.pts);
+  const extras = (opts.extra || []).map(x => ({cls: x.cls, name: x.name, pts: load(x.pk)})).filter(x => x.pts);
   const W = DATA.weeks.length;
   const allv = pts.concat(...extras.map(x => x.pts)).map(p => p[1]);
   const lo = Math.min(...allv), hi = Math.max(...allv);
@@ -1104,36 +1128,54 @@ function chartSVG(pk, ent, opts = {}){
     const pkPt = pts.reduce((a,b) => b[1] > a[1] ? b : a);
     g += `<circle${opts.cls?` class="${opts.cls}"`:''} cx="${X(pkPt[0]).toFixed(1)}" cy="${Y(pkPt[1]).toFixed(1)}" r="2.6"/>`;
   }
-  g += `<line class="cross" id="chx" y1="${mt}" y2="${vh-mb}" visibility="hidden"/>`+
-       `<circle class="crossdot" id="chc" r="3" visibility="hidden"/>`;
-  CH = {pts, W, vw, vh, mx, mt, mb, y0, y1};
+  g += `<line class="cross chx" y1="${mt}" y2="${vh-mb}" visibility="hidden"/>`+
+       `<circle class="crossdot chc" r="3" visibility="hidden"/>`;
+  CH = {series: [{pts, name: opts.name}].concat(extras.map(x => ({pts: x.pts, name: x.name}))),
+        W, vw, vh, X, Y, top: mt, bot: vh-mb};
   return `<svg class="pchart" viewBox="0 0 ${vw} ${vh}" role="img" aria-label="career rating history">${g}</svg>`;
 }
 function wireChart(host, geo){
-  const c0 = geo || CH;
-  if (!host || !host.querySelector || !c0) return;
-  const svg = host.querySelector('svg.pchart');
+  const c = geo || CH;
+  if (!host || !host.querySelector || !c) return;
+  const svg = host.querySelector('svg.pchart, svg.cchart');
   if (!svg) return;
-  const bd = host;
+  const NS = 'http://www.w3.org/2000/svg';
+  let cx = svg.querySelector('.chx'), cc = svg.querySelector('.chc');
+  if (!cx){
+    cx = document.createElementNS(NS, 'line');
+    cx.setAttribute('class', 'cross chx');
+    cx.setAttribute('y1', c.top); cx.setAttribute('y2', c.bot);
+    cx.setAttribute('visibility', 'hidden');
+    svg.appendChild(cx);
+  }
+  if (!cc){
+    cc = document.createElementNS(NS, 'circle');
+    cc.setAttribute('class', 'crossdot chc');
+    cc.setAttribute('r', '3');
+    cc.setAttribute('visibility', 'hidden');
+    svg.appendChild(cc);
+  }
   const tip = document.createElement('div');
   tip.className = 'ctip'; tip.hidden = true;
-  bd.appendChild(tip);
-  const c = c0;
-  const X = i => c.mx + (c.vw-c.mx-8) * i / (c.W-1);
-  const Y = v => (c.vh-c.mb) - (c.vh-c.mb-c.mt) * (v-c.y0) / (c.y1-c.y0);
-  const cx = svg.querySelector('#chx'), cc = svg.querySelector('#chc');
+  host.appendChild(tip);
   svg.addEventListener('mousemove', ev => {
     const r = svg.getBoundingClientRect();
-    const wi = ((ev.clientX - r.left) * c.vw / r.width - c.mx) * (c.W-1) / (c.vw-c.mx-8);
-    let best = c.pts[0];
-    for (const p of c.pts) if (Math.abs(p[0]-wi) < Math.abs(best[0]-wi)) best = p;
-    cx.setAttribute('x1', X(best[0]).toFixed(1)); cx.setAttribute('x2', X(best[0]).toFixed(1));
+    const sx = (ev.clientX - r.left) * c.vw / r.width;
+    const sy = (ev.clientY - r.top) * c.vh / r.height;
+    let best = null, bestSer = null, bestD = Infinity;
+    for (const ser of c.series){
+      let p = ser.pts[0];
+      for (const q of ser.pts) if (Math.abs(c.X(q[0]) - sx) < Math.abs(c.X(p[0]) - sx)) p = q;
+      const d = Math.abs(c.Y(p[1]) - sy);
+      if (d < bestD){ bestD = d; best = p; bestSer = ser; }
+    }
+    cx.setAttribute('x1', c.X(best[0]).toFixed(1)); cx.setAttribute('x2', c.X(best[0]).toFixed(1));
     cx.removeAttribute('visibility');
-    cc.setAttribute('cx', X(best[0]).toFixed(1)); cc.setAttribute('cy', Y(best[1]).toFixed(1));
+    cc.setAttribute('cx', c.X(best[0]).toFixed(1)); cc.setAttribute('cy', c.Y(best[1]).toFixed(1));
     cc.removeAttribute('visibility');
     tip.hidden = false;
-    tip.textContent = `${fmtWk(DATA.weeks[best[0]])} · ${Math.round(best[1])}`;
-    const br = bd.getBoundingClientRect();
+    tip.textContent = `${fmtWk(DATA.weeks[best[0]])} · ${Math.round(best[1])}${bestSer.name ? ' · ' + bestSer.name : ''}`;
+    const br = host.getBoundingClientRect();
     tip.style.left = Math.max(0, Math.min(ev.clientX - br.left + 12, br.width - 110)) + 'px';
     tip.style.top = (ev.clientY - br.top - 28) + 'px';
   });
@@ -1159,7 +1201,7 @@ function openPlayer(pk){
   pcard.innerHTML =
     `<div class="pill pl"><span class="t">${NAMES[e.id]||e.id}${e.nm<1000?' <span class="prov" title="provisional">°</span>':''}</span></div>`+
     `<div class="pill pr"><button class="xbtn x" aria-label="close">`+
-    `<svg viewBox="0 0 256 256" aria-hidden="true"><line x1="200" y1="56" x2="56" y2="200" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"/><line x1="200" y1="200" x2="56" y2="56" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"/></svg>`+
+    `<svg viewBox="0 0 256 256" aria-hidden="true"><line x1="200" y1="56" x2="56" y2="200" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"/><line x1="200" y1="200" x2="56" y2="56" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"/></svg>`+
     `</button></div>`+
     `<div class="bd">`+
     `<div class="meta">${e.role==='B' ? ((e.pos && e.pos!=='?') ? e.pos : 'hitter') : e.role}`+
@@ -1227,8 +1269,9 @@ document.addEventListener('keydown', ev => {
   };
   const mini = (pk, d) => {
     const s = DATA.series[pk];
+    const E = v => 1500 + v*SCALE/1000;
     const pts = [];
-    for (let k = 0; k < s.length; k += 2) pts.push([s[k], s[k+1]]);
+    for (let k = 0; k < s.length; k += 2) pts.push([s[k], E(s[k+1])]);
     const W = DATA.weeks.length;
     const lo = Math.min(...pts.map(p=>p[1])), hi = Math.max(...pts.map(p=>p[1]));
     const pad = (hi-lo)*.1 || 1, vw = 300, vh = 80;
@@ -1237,9 +1280,10 @@ document.addEventListener('keydown', ev => {
     const line = (arr, cls) => arr.length > 1
       ? `<polyline${cls?` class="${cls}"`:''} points="${arr.map(p=>`${X(p[0]).toFixed(1)},${Y(p[1]).toFixed(1)}`).join(' ')}"/>` : '';
     const fall = pts.filter(p => p[0] >= d.hiI && p[0] <= d.loI);
-    return `<svg class="cchart" viewBox="0 0 ${vw} ${vh}" aria-hidden="true">${line(pts,'')}${line(fall,'fall')}`+
-      `<circle cx="${X(d.hiI).toFixed(1)}" cy="${Y(d.hi).toFixed(1)}" r="2.5"/>`+
-      `<circle class="lo" cx="${X(d.loI).toFixed(1)}" cy="${Y(d.lo).toFixed(1)}" r="2.5"/></svg>`;
+    const html = `<svg class="cchart" viewBox="0 0 ${vw} ${vh}">${line(pts,'')}${line(fall,'fall')}`+
+      `<circle cx="${X(d.hiI).toFixed(1)}" cy="${Y(E(d.hi)).toFixed(1)}" r="2.5"/>`+
+      `<circle class="lo" cx="${X(d.loI).toFixed(1)}" cy="${Y(E(d.lo)).toFixed(1)}" r="2.5"/></svg>`;
+    return {html, geo: {series: [{pts}], X, Y, W, vw, vh, top: 4, bot: vh - 4}};
   };
   const cands = [];
   for (const pk in CURBY){
@@ -1247,24 +1291,29 @@ document.addEventListener('keydown', ev => {
     if (d) cands.push({pk, e: CURBY[pk], d});
   }
   cands.sort((a,b) => b.d.dd - a.d.dd);
-  wrap.innerHTML = cands.slice(0,6).map(({pk, e, d}) =>
-    `<div class="cfig"><div class="cHead"><span data-pk="${pk}" tabindex="0" role="button">${NAMES[e.id]||e.id}</span>${brefLink(e.id)}</div>`+
-    `<div class="cNums"><b>${Math.round(1500 + d.hi*SCALE/1000)}</b> &rarr; <b>${Math.round(1500 + d.lo*SCALE/1000)}</b> `+
-    `<span class="dn">▼${Math.round(d.dd*SCALE/1000)}</span> · ${fmtWk(DATA.weeks[d.hiI])} – ${fmtWk(DATA.weeks[d.loI])}</div>`+
-    mini(pk, d) + '</div>').join('');
+  const geos = [];
+  wrap.innerHTML = cands.slice(0,6).map(({pk, e, d}) => {
+    const m = mini(pk, d);
+    geos.push(m.geo);
+    return `<div class="cfig"><div class="cHead"><span data-pk="${pk}" tabindex="0" role="button">${NAMES[e.id]||e.id}</span>${brefLink(e.id)}</div>`+
+      `<div class="cNums"><b>${Math.round(1500 + d.hi*SCALE/1000)}</b> &rarr; <b>${Math.round(1500 + d.lo*SCALE/1000)}</b> `+
+      `<span class="dn">▼${Math.round(d.dd*SCALE/1000)}</span> · ${fmtWk(DATA.weeks[d.hiI])} – ${fmtWk(DATA.weeks[d.loI])}</div>`+
+      m.html + '</div>';
+  }).join('');
+  wrap.querySelectorAll('.cfig').forEach((el, i) => wireChart(el, geos[i]));
 })();
 /* — discussion figures: the profile chart machinery, verbatim (axes, frozen
    spans, crosshair + tooltip via wireChart) — no bespoke graphs here — */
 (function fillTalkFigs(){
   const peak = document.getElementById('peakchart');
   if (peak){
-    peak.innerHTML = chartSVG('592450b', null, {ref: 1600, peak: true});
+    peak.innerHTML = chartSVG(TALK_PEAKS[0].pk, null, {ref: 1600, peak: true});
     if (peak.querySelector('svg.pchart')) wireChart(peak, CH);
     else document.getElementById('peakfig').remove();
   }
   const sho = document.getElementById('shochart');
   if (sho){
-    sho.innerHTML = chartSVG('660271b', null, {cls: 'bat', extra: [{pk: '660271p'}]});
+    sho.innerHTML = chartSVG('660271b', null, {cls: 'bat', name: 'batting', extra: [{pk: '660271p', name: 'pitching'}]});
     if (sho.querySelector('svg.pchart')) wireChart(sho, CH);
     else document.getElementById('shofig').remove();
   }
