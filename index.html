@@ -635,6 +635,44 @@ PITCHES.forEach((p, i) => {
 panes.season += fp + '</table></div></div>';
 
 /* — Almanac (yearly boards) — */
+/* per-year hottest stretches (replaces the redundant peak boards) */
+const surgesByYear = {};
+{
+  const allPl = CUR.concat(DATA.inactive || []);
+  for (const e of allPl){
+    const key = '' + e.id + (e.role === 'B' ? 'b' : 'p');
+    const s = DATA.series && DATA.series[key];
+    if (!s) continue;
+    let cy = null, pts = [];
+    const flush = () => {
+      if (cy && pts.length >= 2){
+        let best = null;
+        for (let a = 0; a < pts.length; a++)
+          for (let b = a + 1; b < pts.length && pts[b][0] - pts[a][0] <= 5; b++){
+            const g = pts[b][1] - pts[a][1];
+            if (!best || g > best.g) best = {g, end: pts[b][0]};
+          }
+        if (best && best.g > 0)
+          (surgesByYear[cy] ||= {B:[],SP:[],RP:[]})[e.role]
+            .push({id: e.id, side: e.role === 'B' ? 'b' : 'p', g: best.g/1000, wk: DATA.weeks[best.end]});
+      }
+      pts = [];
+    };
+    for (let k = 0; k < s.length; k += 2){
+      const y = DATA.weeks[s[k]].slice(0,4);
+      if (y !== cy){ flush(); cy = y; }
+      pts.push([s[k], s[k+1]]);
+    }
+    flush();
+  }
+  for (const y in surgesByYear)
+    for (const c of ['B','SP','RP'])
+      surgesByYear[y][c] = surgesByYear[y][c].sort((a,b)=>b.g-a.g).slice(0,10);
+}
+const surgeBoard = list => `<ol class="board">` + list.map((e,i)=>
+  `<li><span class="rank">${i+1}</span><span class="pname" data-pk="${e.id}${e.side}" tabindex="0" role="button">${NAMES[e.id]||e.id}</span>`+
+  brefLink(e.id) + `<span class="wkof">wk ${fmtWk(e.wk)}</span><span class="elo up">▲${Math.round(e.g*SCALE)}</span></li>`).join('') + '</ol>';
+
 const years = Object.keys(DATA.yearly).sort().reverse();
 const latest = years[0];
 let yv = `<div class="alnav"><div class="seg" id="alseg">`+
@@ -646,21 +684,31 @@ for (const y of years){
   const cuts = DATA.yearly[y].xrv;
   const aw = (DATA.awards||{})[y];
   const views = [['fresh', y===latest ? 'Right now' : 'Season end'],
-                 ['fresh_peak','Peaks — highest touched, any week'],
+                 ['hot','Hottest stretches — biggest four-week climbs'],
                  ['mid','Midseason — as of July 1'],
-                 ['end', y===latest ? 'Right now' : 'Season end'],
-                 ['peak','Peaks — highest touched this year']];
+                 ['end', y===latest ? 'Right now' : 'Season end']];
   const groups = {fresh: `Season Elo <span class="sub">— everyone restarts at 1500 in spring</span>`,
                   mid: `Career Elo <span class="sub">— continuous, carries winter to winter</span>`};
   yv += `<section class="year" id="yr-${y}"><h2 class="year">${y}</h2><div class="cut" data-cut="season">`;
   for (const [v, label] of views){
+    if (v === 'hot'){
+      const sy = surgesByYear[y];
+      if (sy){
+        yv += `<h3 class="view">${label}</h3><div class="boards">`;
+        for (const [cat, title, color] of CATS)
+          if (sy[cat] && sy[cat].length)
+            yv += `<div class="card"><h4><span class="dot" style="background:${color}"></span>${title}</h4>` + surgeBoard(sy[cat]) + '</div>';
+        yv += '</div>';
+      }
+      continue;
+    }
     if (!cuts[v]) continue;
     if (v === 'mid') yv += `</div><div class="cut" data-cut="career">`;
     if (groups[v]) yv += `<h3 class="group">${groups[v]}</h3>`;
     yv += `<h3 class="view">${label}</h3><div class="boards">`;
     for (const [cat, title, color] of CATS){
       let badges = null, note = '';
-      if (aw && (v==='fresh' || v==='fresh_peak') && cat!=='RP'){
+      if (aw && v==='fresh' && cat!=='RP'){
         const [winners, chip, word] = cat==='B' ? [aw.mvp, 'MVP', 'MVP'] : [aw.cy, 'CY', 'Cy Young'];
         badges = {};
         const ids = new Set(cuts[v][cat].map(e=>String(e.id)));
@@ -771,7 +819,7 @@ panes.about = `
 <li><b>±9</b> — daily wobble; gaps under 15 are ties</li>
 <li><b>°</b> — provisional: under 1,000 career matches; young ratings run hot and settle with play</li>
 <li><b>25 points</b> — about one win per season: 650 at-bats of that edge &asymp; 10 runs, the classic runs-per-win</li>
-<li><b>Season Elo</b> — separate track, resets to 1500 each spring; a live race standing, not a season award — season high-water marks live in the Almanac</li>
+<li><b>Season Elo</b> — separate track, resets to 1500 each spring; a live race standing, not a season award — all-time high-water marks live on the Since 2015 tab</li>
 </ul></div>
 <h3 class="view">FAQ</h3>
 <div class="card"><ul class="faq">
