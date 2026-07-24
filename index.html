@@ -707,7 +707,7 @@ panes.talk = `
 <h3 class="view">Born from a failed betting model · Jul 22</h3>
 <div class="card"><ul>
 <li><b>The origin</b> — this site began as a betting model: strikeout props, hit props, a full pipeline</li>
-<li><b>The test</b> — ~35,000 props graded against closing lines; verdict pre-registered: beat the close or quit</li>
+<li><b>The test</b> — ~18,000 props graded against their closing lines (35,000 market snapshots); verdict pre-registered: beat the close or quit</li>
 <li><b>The verdict</b> — no edge; the market already knew everything we built, and knew it sooner</li>
 <li><b>The pivot</b> — the ratings were too much fun to bury, so the model became this site</li>
 <li><b>The upshot</b> — don&rsquo;t bet with this; we checked harder than anyone selling picks ever will</li>
@@ -792,17 +792,17 @@ panes.about = `
 </ul></div>
 <h3 class="view">How it was built</h3>
 <div class="card"><ul>
-<li><b>Tanji Systems, July 2026</b> — directed by <a class="txt" href="https://merriman.xyz">Brian Merriman</a>, AI implementation</li>
+<li><b>Tanji Systems, July 2026</b> — built by <a class="txt" href="https://merriman.xyz">Brian Merriman</a>; AI coding agents assisted implementation — direction, architecture, research design, and validation were his</li>
 <li><b>Chosen by prediction</b> — every design decision tested out-of-sample</li>
 <li><b>15 rivals benched</b> — Glicko, pitch-type ratings, raw outcome grading</li>
 <li><b>Calibrated siblings</b> — the companion hit model says 64%, it happens 64.5% (43,000 held-out games)</li>
-<li><b>Market-humbled</b> — ~35,000 props graded against closing lines; the market won; that verdict built this site</li>
+<li><b>Market-humbled</b> — ~18,000 props graded against their closing lines; the market won; that verdict built this site</li>
 <li><b>Sources</b> — MLB Statcast via pybaseball; Chadwick IDs; not MLB-affiliated</li>
 </ul></div>
 <h3 class="view">History</h3>
 <div class="card"><ul>
 <li><b>Jul 22, 2026</b> — born as a betting-market study; first contest ratings built</li>
-<li><b>Jul 22–23</b> — fifteen-system shootout; 35,000 props graded; almanac published</li>
+<li><b>Jul 22–23</b> — fifteen-system shootout; ~18,000 props graded; almanac published</li>
 <li><b>Jul 23</b> — decade backfill, live boards, house design</li>
 <li><b>Jul 23</b> — the match basis: the at-bat is the chess game, pitches its moves; per-pitch ratings retained for the Filthiest board</li>
 <li><b>Jul 23</b> — grading refit after the &ldquo;Ichiro test&rdquo;: a park-controlled fit showed placement/speed craft is real skill, so contact now counts half actual, half expected</li>
@@ -1007,7 +1007,7 @@ function openPlayer(pk){
   pcard.innerHTML =
     `<div class="pill pl"><span class="t">${NAMES[e.id]||e.id}${e.nm<1000?' <span class="prov" title="provisional">°</span>':''}</span></div>`+
     `<div class="pill pr"><button class="xbtn x" aria-label="close">`+
-    `<svg viewBox="0 0 256 256" aria-hidden="true"><line x1="200" y1="56" x2="56" y2="200" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="14"/><line x1="200" y1="200" x2="56" y2="56" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="14"/></svg>`+
+    `<svg viewBox="0 0 256 256" aria-hidden="true"><line x1="200" y1="56" x2="56" y2="200" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"/><line x1="200" y1="200" x2="56" y2="56" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"/></svg>`+
     `</button></div>`+
     `<div class="bd">`+
     `<div class="meta">${e.role==='B' ? ((e.pos && e.pos!=='?') ? e.pos : 'hitter') : e.role}`+
