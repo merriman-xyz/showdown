@@ -279,6 +279,17 @@ button.xbtn svg{width:10.5px;height:10.5px;display:block}
 tr.inact td, tr.inact td.pname, tr.inact td.elo{color:var(--muted)}
 .outboard .pname, .outboard .elo{color:var(--muted)}
 ol.board li.off .pname, ol.board li.off .elo{color:var(--muted)}
+.talkintro{font-size:11.5px;color:var(--muted);margin:0 0 10px;max-width:72ch}
+.cHead{font:600 13px/1.2 var(--serif);font-variant:small-caps;letter-spacing:.05em;color:var(--ink-strong);
+  display:flex;align-items:center;gap:6px}
+.cNums{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums;margin-top:2px}
+.cNums b{color:var(--ink-strong)}
+.cchart{display:block;width:100%;height:auto;background:var(--page);border:1px solid var(--border);
+  border-radius:4px;margin-top:8px}
+.cchart polyline{fill:none;stroke:var(--accent);stroke-width:1.2;opacity:.85}
+.cchart polyline.fall{stroke:var(--error);stroke-width:1.7;opacity:1}
+.cchart circle{fill:var(--accent)}
+.cchart circle.lo{fill:var(--error)}
 .pname[data-pk]{cursor:pointer}
 .pname[data-pk]:hover{text-decoration:underline;text-decoration-color:var(--accent);text-underline-offset:2px}
 .pname[data-pk]:focus-visible{outline:1px solid var(--accent);outline-offset:1px}
@@ -744,14 +755,9 @@ panes.talk = `
 <li><b>The lesson</b> — plausible is not correct; every number here survived being attacked, or it isn&rsquo;t here</li>
 </ul></div>
 <h3 class="view">The great collapses · Jul 23</h3>
-<div class="card"><ul>
-<li><b>What this is</b> — the biggest peak-to-trough falls since 2015, straight from the rating series (click any name for the picture)</li>
-<li><b>Bellinger</b> — 1610 in May 2019, an MVP at 23; 1488 by mid-2022 — the steepest famous fall the rating ever tracked</li>
-<li><b>Arrieta</b> — 1601 the April after his Cy Young; 145 points gone by the end</li>
-<li><b>Betts</b> — 1657 in April 2024, then a 121-point slide into 2025; the current race says the argument isn&rsquo;t over</li>
-<li><b>Votto and Miggy</b> — twin ~1600-to-1490 aging curves, a decade of greatness exhaled over six seasons</li>
-<li><b>The pattern</b> — collapses are slow; the rating never saw a cliff, only long descents nobody called in time</li>
-</ul></div>
+<p class="talkintro">The biggest peak-to-trough falls since 2015, computed nightly from the rating series — the red stretch is the fall; click a name for the full profile.</p>
+<div class="movers" id="collapses"></div>
+<p class="talkintro">The pattern: collapses are slow. The rating never saw a cliff — only long descents nobody called in time.</p>
 <h3 class="view">Born from a failed betting model · Jul 22</h3>
 <div class="card"><ul>
 <li><b>The origin</b> — this site began as a betting model: strikeout props, hit props, a full pipeline</li>
@@ -1106,6 +1112,49 @@ document.addEventListener('keydown', ev => {
 document.addEventListener('keydown', ev => {
   if (ev.key === 'Escape' && pmodal.classList.contains('on')) closePlayer();
 });
+/* — the great collapses: max drawdown per career, top six, mini charts — */
+(function fillCollapses(){
+  const wrap = document.getElementById('collapses');
+  if (!wrap || !DATA.series) return;
+  const dd = pk => {
+    const s = DATA.series[pk];
+    if (!s || s.length < 40) return null;
+    let hi = -1e9, hiI = 0, best = null;
+    for (let k = 0; k < s.length; k += 2){
+      const i = s[k], v = s[k+1];
+      if (v > hi){ hi = v; hiI = i; }
+      if (!best || hi - v > best.dd) best = {dd: hi - v, hiI, loI: i, hi, lo: v};
+    }
+    return best && best.dd > 0 ? best : null;
+  };
+  const mini = (pk, d) => {
+    const s = DATA.series[pk];
+    const pts = [];
+    for (let k = 0; k < s.length; k += 2) pts.push([s[k], s[k+1]]);
+    const W = DATA.weeks.length;
+    const lo = Math.min(...pts.map(p=>p[1])), hi = Math.max(...pts.map(p=>p[1]));
+    const pad = (hi-lo)*.1 || 1, vw = 300, vh = 80;
+    const X = i => 4 + (vw-8)*i/(W-1);
+    const Y = v => vh - 6 - (vh-12)*(v-(lo-pad))/((hi-lo)+2*pad);
+    const line = (arr, cls) => arr.length > 1
+      ? `<polyline${cls?` class="${cls}"`:''} points="${arr.map(p=>`${X(p[0]).toFixed(1)},${Y(p[1]).toFixed(1)}`).join(' ')}"/>` : '';
+    const fall = pts.filter(p => p[0] >= d.hiI && p[0] <= d.loI);
+    return `<svg class="cchart" viewBox="0 0 ${vw} ${vh}" aria-hidden="true">${line(pts,'')}${line(fall,'fall')}`+
+      `<circle cx="${X(d.hiI).toFixed(1)}" cy="${Y(d.hi).toFixed(1)}" r="2.5"/>`+
+      `<circle class="lo" cx="${X(d.loI).toFixed(1)}" cy="${Y(d.lo).toFixed(1)}" r="2.5"/></svg>`;
+  };
+  const cands = [];
+  for (const pk in CURBY){
+    const d = dd(pk);
+    if (d) cands.push({pk, e: CURBY[pk], d});
+  }
+  cands.sort((a,b) => b.d.dd - a.d.dd);
+  wrap.innerHTML = cands.slice(0,6).map(({pk, e, d}) =>
+    `<div class="card"><div class="cHead"><span data-pk="${pk}" tabindex="0" role="button">${NAMES[e.id]||e.id}</span>${brefLink(e.id)}</div>`+
+    `<div class="cNums"><b>${Math.round(1500 + d.hi*SCALE/1000)}</b> &rarr; <b>${Math.round(1500 + d.lo*SCALE/1000)}</b> `+
+    `<span class="dn">▼${Math.round(d.dd*SCALE/1000)}</span> · ${fmtWk(DATA.weeks[d.hiI])} – ${fmtWk(DATA.weeks[d.loI])}</div>`+
+    mini(pk, d) + '</div>').join('');
+})();
 if (/^#p-\w+$/.test(BOOT_HASH)) openPlayer(BOOT_HASH.slice(3));
 if (typeof window !== 'undefined' && window.addEventListener)
   window.addEventListener('hashchange', () => {
