@@ -313,8 +313,11 @@ ul.duels .res{font-variant-numeric:tabular-nums;white-space:nowrap}
 .figcap{font-size:10.5px;color:var(--muted);margin:6px 0 0;max-width:66ch}
 .talk-art h4{margin:14px 0 6px}
 .talk-art h4:first-child{margin-top:0}
-ol.board.scale li{grid-template-columns:56px minmax(0,1fr)}
-.sdesc{font-size:12px;color:var(--ink)}
+ul.def{list-style:none;margin:0;padding:0}
+ul.def li{display:grid;grid-template-columns:160px 1fr;gap:12px;align-items:baseline;
+  padding:4px 2px;border-bottom:1px solid var(--sunken)}
+ul.def li:last-child{border-bottom:none}
+ul.def .dt{font-weight:700;font-size:12px;color:var(--ink-strong)}
 ul.hist{list-style:none;margin:0;padding:0}
 ul.hist li{display:grid;grid-template-columns:84px 1fr;gap:12px;align-items:baseline;
   padding:5px 2px;border-bottom:1px solid var(--sunken)}
@@ -911,49 +914,49 @@ panes.about = `
 <button class="ychip" data-goto="a-hist">History</button>
 </div>
 <h3 class="view" id="a-what">What this is</h3>
-<div class="card"><ul>
-<li><b>An Elo system for baseball</b> — the at-bat is the chess game; pitches are the moves</li>
-<li><b>Built from play itself</b> — every MLB at-bat since 2015, ~2 million rated matches</li>
-<li><b>One live number per player</b> — hitters and pitchers, updated nightly</li>
-<li><b>Pure hitting, pure pitching</b> — the at-bat duel only; fielding, baserunning, and position count for nothing</li>
-<li><b>A level, not a total</b> — nothing accumulates; a hot month moves it, playing time alone never does</li>
-<li><b>Form, not fame</b> — recent play counts most; reputation counts for nothing</li>
-<li><b>The answer to</b> — who is actually best right now, this season, and since 2015</li>
-</ul></div>
+<div class="card talk-art">
+<ul class="def">
+<li><span class="dt">An Elo for baseball</span><span>the at-bat is the chess game; pitches are the moves</span></li>
+<li><span class="dt">Built from play</span><span>every MLB at-bat since 2015 — ~2 million rated matches</span></li>
+<li><span class="dt">One live number</span><span>per player, hitters and pitchers, updated nightly</span></li>
+<li><span class="dt">The duel only</span><span>pure hitting, pure pitching; fielding, baserunning, and position count for nothing</span></li>
+<li><span class="dt">A level, not a total</span><span>nothing accumulates; a hot month moves it, playing time alone never does</span></li>
+<li><span class="dt">Form, not fame</span><span>recent play counts most; reputation counts for nothing</span></li>
+<li><span class="dt">The answer to</span><span>who is actually best right now, this season, and since 2015</span></li>
+</ul>
+</div>
 <h3 class="view" id="a-how">How it works</h3>
 <div class="card talk-art">
 <h4>The match</h4>
-<ul>
-<li><b>Every at-bat is a match</b> — hitter vs pitcher; the pitches are its moves</li>
-<li><b>Expectation first</b> — both ratings predict the at-bat&rsquo;s outcome before it happens</li>
-<li><b>Surprise moves ratings</b> — beat the expectation, gain; fall short, lose</li>
-<li><b>Upsets pay more</b> — a whiff from a contact artist counts extra; one from a hacker barely counts</li>
+<ul class="def">
+<li><span class="dt">Every at-bat</span><span>a match: hitter vs pitcher; the pitches are its moves</span></li>
+<li><span class="dt">Expectation first</span><span>both ratings predict the at-bat&rsquo;s outcome before it happens</span></li>
+<li><span class="dt">Surprise moves ratings</span><span>beat the expectation, gain; fall short, lose</span></li>
+<li><span class="dt">Upsets pay more</span><span>a whiff from a contact artist counts extra; one from a hacker barely counts</span></li>
 </ul>
 <h4>The score</h4>
-<ul>
-<li><b>Match score</b> — the at-bat&rsquo;s total run value: walks and homers big, strikeouts negative</li>
-<li><b>Half deserved, half real</b> — contact counts 50% what happened, 50% what the physics earned; the split was fit by prediction, not taste</li>
-<li><b>Craft counts</b> — placement and speed skill survived a park-controlled test, so real outcomes keep half the vote; pure luck still washes out</li>
+<ul class="def">
+<li><span class="dt">Match score</span><span>the at-bat&rsquo;s total run value: walks and homers big, strikeouts negative</span></li>
+<li><span class="dt">Half deserved, half real</span><span>contact counts 50% what happened, 50% what the physics earned; the split was fit by prediction, not taste</span></li>
+<li><span class="dt">Craft counts</span><span>placement and speed skill survived a park-controlled test, so real outcomes keep half the vote; pure luck washes out</span></li>
 </ul>
 <h4>The clock</h4>
-<ul>
-<li><b>Memory of ~100 matches</b> — a few weeks for regulars; older play fades out</li>
-<li><b>Winters freeze</b> — tested on ten offseasons; freezing beat every alternative</li>
-<li><b>Live lists</b> — 500+ career pitches and active in the last 3 weeks; early 2015&rsquo;s cold start converges within two months</li>
-<li><b>Moves rated too</b> — each pitch shape keeps its own record (Filthiest pitches, on the Season tab)</li>
+<ul class="def">
+<li><span class="dt">Memory</span><span>~100 matches — a few weeks for regulars; older play fades out</span></li>
+<li><span class="dt">Winters freeze</span><span>tested on ten offseasons; freezing beat every alternative</span></li>
+<li><span class="dt">Live lists</span><span>500+ career pitches and active in the last 3 weeks; early 2015&rsquo;s cold start converges within two months</span></li>
+<li><span class="dt">Moves rated too</span><span>each pitch shape keeps its own record (Filthiest pitches, on the Season tab)</span></li>
 </ul>
 </div>
 <h3 class="view" id="a-scale">Reading the scale</h3>
 <div class="card talk-art">
-<ol class="board scale">
-<li><span class="bar" style="background:var(--accent);width:34%"></span><span class="pname">1500</span><span class="sdesc">league average — everyone&rsquo;s starting line</span></li>
-<li><span class="bar" style="background:var(--accent);width:64%"></span><span class="pname">1560+</span><span class="sdesc">All-Star tier — top 10%</span></li>
-<li><span class="bar" style="background:var(--accent);width:92%"></span><span class="pname">1600+</span><span class="sdesc">elite — top 1%</span></li>
-</ol>
-<ul>
-<li><b>±9</b> — daily wobble; gaps under 15 are ties</li>
-<li><b>°</b> — provisional: under 1,000 career matches</li>
-<li><b>25 points</b> — about one win per season</li>
+<ul class="def">
+<li><span class="dt">1500</span><span>league average — everyone&rsquo;s starting line</span></li>
+<li><span class="dt">1560+</span><span>All-Star tier — top 10%</span></li>
+<li><span class="dt">1600+</span><span>elite — top 1%</span></li>
+<li><span class="dt">±9</span><span>daily wobble; gaps under 15 are ties</span></li>
+<li><span class="dt">°</span><span>provisional — under 1,000 career matches</span></li>
+<li><span class="dt">25 points</span><span>about one win per season</span></li>
 </ul>
 <p>Two tracks: <b>Career Elo</b> is continuous and carries winter to winter; <b>Season Elo</b> restarts everyone at 1500 each spring — a live race standing, not a season award. The Almanac keeps each year&rsquo;s highs; all-time high-water marks live on the Since 2015 tab.</p>
 </div>
@@ -970,23 +973,19 @@ panes.about = `
 
 <h3 class="view" id="a-built">How it was built</h3>
 <div class="card talk-art">
-<div class="figrow">
-<div class="fig"><div class="lbl">Rival systems benched</div><div class="val">15</div></div>
-<div class="fig"><div class="lbl">Props graded vs close</div><div class="val">~18,000</div></div>
-<div class="fig"><div class="lbl">Held-out games</div><div class="val">43,000</div></div>
-</div>
-<ul>
-<li><b>Chosen by prediction</b> — every design decision tested out-of-sample; Glicko, pitch-type ratings, and raw outcome grading all lost the shootout</li>
-<li><b>Calibrated</b> — the companion hit model says 64%; it happens 64.5%</li>
-<li><b>Market-humbled</b> — the closing line beat every wagering model; that verdict built this site</li>
-<li><b>Sources</b> — MLB Statcast via pybaseball; Chadwick IDs; not MLB-affiliated</li>
+<ul class="def">
+<li><span class="dt">Chosen by prediction</span><span>every design decision tested out-of-sample; 15 rival systems — Glicko, pitch-type ratings, raw outcome grading — lost the shootout</span></li>
+<li><span class="dt">Calibrated</span><span>the companion hit model says 64%; it happens 64.5%, on 43,000 held-out games</span></li>
+<li><span class="dt">Market-humbled</span><span>~18,000 props graded against their closing lines; the market won — that verdict built this site</span></li>
+<li><span class="dt">Sources</span><span>MLB Statcast via pybaseball; Chadwick IDs; not MLB-affiliated</span></li>
 </ul>
 <div class="take"><b>Tanji Systems, July 2026</b> — built by <a class="txt" href="https://merriman.xyz">Brian Merriman</a>; AI coding agents assisted implementation — direction, architecture, research design, and validation were his.</div>
 </div>
 <h3 class="view" id="a-hist">History</h3>
 <div class="card talk-art">
+<h4>2026</h4>
 <ul class="hist">
-<li><span class="hd">Jul 22, 2026</span><span>born as a betting-market study; first contest ratings built</span></li>
+<li><span class="hd">Jul 22</span><span>born as a betting-market study; first contest ratings built</span></li>
 <li><span class="hd">Jul 22–23</span><span>fifteen-system shootout; ~18,000 props graded; almanac published</span></li>
 <li><span class="hd">Jul 23</span><span>decade backfill, live boards, house design</span></li>
 <li><span class="hd">Jul 23</span><span>the match basis: the at-bat is the chess game, pitches its moves; per-pitch ratings retained for the Filthiest board</span></li>
