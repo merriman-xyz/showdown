@@ -488,7 +488,6 @@ for (const [list, lbl] of [[hitters,'Best hitter right now'],[sps,'Best starter'
     `<div class="big">${disp(e.elo)}</div><div class="sub">season ${disp(e.selo)} · 30d ${fmtD(e.d30)}</div></div>`;
 }
 hv += '</div>';
-hv += `<p style="font-size:11px;color:var(--muted);margin:0 0 16px">From the Discussions: <a href="#talk" class="txt" onclick="showTab('talk')" style="color:var(--accent);font-weight:600;text-decoration:none">The week we were wrong</a> — an outside review, a silent bug, and what survived it</p>`;
 
 /* — The 1600 club, per role (greyed = sidelined) — */
 const CLUB_R = (1600 - 1500) / SCALE;
@@ -745,15 +744,6 @@ panes.almanac = yv;
 
 /* — Discussions: questions the ratings raised, answered by test — */
 panes.talk = `
-<h3 class="view">The week we were wrong · Jul 23</h3>
-<div class="card"><ul>
-<li><b>The find</b> — an outside review caught a silent grouping bug: 96% of at-bat totals were summing the wrong pitches</li>
-<li><b>Why nobody noticed</b> — every pitch value was right, only the grouping was shuffled; the boards still looked like baseball</li>
-<li><b>The fix</b> — one line, four files, and a nightly test that fails the publish if it ever regresses</li>
-<li><b>What survived</b> — the 50/50 craft blend re-won its fit on corrected data, more cleanly than before</li>
-<li><b>What didn&rsquo;t</b> — the old leaderboard; &Aacute;lvarez took the top spot and the inflated pitcher peaks deflated</li>
-<li><b>The lesson</b> — plausible is not correct; every number here survived being attacked, or it isn&rsquo;t here</li>
-</ul></div>
 <h3 class="view">The great collapses · Jul 23</h3>
 <p class="talkintro">The biggest peak-to-trough falls since 2015, computed nightly from the rating series — the red stretch is the fall; click a name for the full profile.</p>
 <div class="movers" id="collapses"></div>
