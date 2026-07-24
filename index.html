@@ -914,39 +914,23 @@ panes.about = `
 <button class="ychip" data-goto="a-hist">History</button>
 </div>
 <h3 class="view" id="a-what">What this is</h3>
-<div class="card talk-art">
-<ul class="def">
-<li><span class="dt">An Elo for baseball</span><span>the at-bat is the chess game; pitches are the moves</span></li>
-<li><span class="dt">Built from play</span><span>every MLB at-bat since 2015 — ~2 million rated matches</span></li>
-<li><span class="dt">One live number</span><span>per player, hitters and pitchers, updated nightly</span></li>
-<li><span class="dt">The duel only</span><span>pure hitting, pure pitching; fielding, baserunning, and position count for nothing</span></li>
-<li><span class="dt">A level, not a total</span><span>nothing accumulates; a hot month moves it, playing time alone never does</span></li>
-<li><span class="dt">Form, not fame</span><span>recent play counts most; reputation counts for nothing</span></li>
-<li><span class="dt">The answer to</span><span>who is actually best right now, this season, and since 2015</span></li>
-</ul>
-</div>
+<div class="card"><ul>
+<li><b>An Elo system for baseball</b> — the at-bat is the chess game; pitches are the moves</li>
+<li><b>Built from play itself</b> — every MLB at-bat since 2015, ~2 million rated matches</li>
+<li><b>One live number per player</b> — hitters and pitchers, updated nightly</li>
+<li><b>Pure hitting, pure pitching</b> — the at-bat duel only; fielding, baserunning, and position count for nothing</li>
+<li><b>A level, not a total</b> — nothing accumulates; a hot month moves it, playing time alone never does</li>
+<li><b>Form, not fame</b> — recent play counts most; reputation counts for nothing</li>
+<li><b>The answer to</b> — who is actually best right now, this season, and since 2015</li>
+</ul></div>
 <h3 class="view" id="a-how">How it works</h3>
 <div class="card talk-art">
 <h4>The match</h4>
-<ul class="def">
-<li><span class="dt">Every at-bat</span><span>a match: hitter vs pitcher; the pitches are its moves</span></li>
-<li><span class="dt">Expectation first</span><span>both ratings predict the at-bat&rsquo;s outcome before it happens</span></li>
-<li><span class="dt">Surprise moves ratings</span><span>beat the expectation, gain; fall short, lose</span></li>
-<li><span class="dt">Upsets pay more</span><span>a whiff from a contact artist counts extra; one from a hacker barely counts</span></li>
-</ul>
+<p>Every at-bat is a match — hitter vs pitcher, the pitches its moves. Both ratings predict the outcome before it happens; beat the expectation and you gain, fall short and you lose. Upsets pay more: a whiff from a contact artist counts extra, one from a hacker barely counts.</p>
 <h4>The score</h4>
-<ul class="def">
-<li><span class="dt">Match score</span><span>the at-bat&rsquo;s total run value: walks and homers big, strikeouts negative</span></li>
-<li><span class="dt">Half deserved, half real</span><span>contact counts 50% what happened, 50% what the physics earned; the split was fit by prediction, not taste</span></li>
-<li><span class="dt">Craft counts</span><span>placement and speed skill survived a park-controlled test, so real outcomes keep half the vote; pure luck washes out</span></li>
-</ul>
+<p>The match score is the at-bat&rsquo;s total run value — walks and homers big, strikeouts negative. Contact is graded half by what happened and half by what the physics earned; placement and speed craft survived a park-controlled test, so real outcomes keep their half of the vote while pure luck washes out. The split was fit by prediction, not taste.</p>
 <h4>The clock</h4>
-<ul class="def">
-<li><span class="dt">Memory</span><span>~100 matches — a few weeks for regulars; older play fades out</span></li>
-<li><span class="dt">Winters freeze</span><span>tested on ten offseasons; freezing beat every alternative</span></li>
-<li><span class="dt">Live lists</span><span>500+ career pitches and active in the last 3 weeks; early 2015&rsquo;s cold start converges within two months</span></li>
-<li><span class="dt">Moves rated too</span><span>each pitch shape keeps its own record (Filthiest pitches, on the Season tab)</span></li>
-</ul>
+<p>The rating remembers about a hundred matches — a few weeks for regulars — and older play fades out. Winters freeze in place: tested on ten offseasons, freezing beat every alternative. Boards list players with 500+ career pitches active in the last 3 weeks, and each pitch shape keeps its own record — the Filthiest board on the Season tab.</p>
 </div>
 <h3 class="view" id="a-scale">Reading the scale</h3>
 <div class="card talk-art">
@@ -973,12 +957,9 @@ panes.about = `
 
 <h3 class="view" id="a-built">How it was built</h3>
 <div class="card talk-art">
-<ul class="def">
-<li><span class="dt">Chosen by prediction</span><span>every design decision tested out-of-sample; 15 rival systems — Glicko, pitch-type ratings, raw outcome grading — lost the shootout</span></li>
-<li><span class="dt">Calibrated</span><span>the companion hit model says 64%; it happens 64.5%, on 43,000 held-out games</span></li>
-<li><span class="dt">Market-humbled</span><span>~18,000 props graded against their closing lines; the market won — that verdict built this site</span></li>
-<li><span class="dt">Sources</span><span>MLB Statcast via pybaseball; Chadwick IDs; not MLB-affiliated</span></li>
-</ul>
+<p>Every design decision was chosen by prediction, not taste: fifteen rival systems — Glicko, pitch-type ratings, raw outcome grading — lost an out-of-sample shootout to this one. The engine family calibrates: the companion hit model says 64% and it happens 64.5%, on 43,000 held-out games.</p>
+<p>It was also humbled. ~18,000 props were graded against their closing lines and the market won — that verdict is why this is a ratings site and not a picks site.</p>
+<p>Data: MLB Statcast via pybaseball; Chadwick IDs. Not affiliated with Major League Baseball.</p>
 <div class="take"><b>Tanji Systems, July 2026</b> — built by <a class="txt" href="https://merriman.xyz">Brian Merriman</a>; AI coding agents assisted implementation — direction, architecture, research design, and validation were his.</div>
 </div>
 <h3 class="view" id="a-hist">History</h3>
