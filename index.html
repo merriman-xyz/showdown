@@ -202,11 +202,6 @@ section.year{scroll-margin-top:calc(var(--alnav-h, 47px) + 34px)}
 .subnote{margin-top:8px;padding-top:6px;border-top:1px solid var(--sunken);
   font-size:10.5px;color:var(--muted)}
 .subnote b{color:var(--ink)}
-.card ul.faq{padding-left:0;list-style:none}
-.card ul.faq li{margin:0 0 10px}
-.card ul.faq li:last-child{margin-bottom:0}
-.faq .q{display:block;font-weight:700;color:var(--ink-strong);margin-bottom:1px}
-.faq .a{display:block;color:var(--ink);padding-left:14px}
 @media (max-width:640px){
   nav.tabs button[data-tab="talk"]{margin-left:0}
 }
@@ -313,11 +308,6 @@ ul.duels .res{font-variant-numeric:tabular-nums;white-space:nowrap}
 .figcap{font-size:10.5px;color:var(--muted);margin:6px 0 0;max-width:66ch}
 .talk-art h4{margin:14px 0 6px}
 .talk-art h4:first-child{margin-top:0}
-ul.def{list-style:none;margin:0;padding:0}
-ul.def li{display:grid;grid-template-columns:160px 1fr;gap:12px;align-items:baseline;
-  padding:4px 2px;border-bottom:1px solid var(--sunken)}
-ul.def li:last-child{border-bottom:none}
-ul.def .dt{font-weight:700;font-size:12px;color:var(--ink-strong)}
 ul.hist{list-style:none;margin:0;padding:0}
 ul.hist li{display:grid;grid-template-columns:84px 1fr;gap:12px;align-items:baseline;
   padding:5px 2px;border-bottom:1px solid var(--sunken)}
@@ -904,6 +894,9 @@ ${TALK_P.map(x => `<li><span data-pk="${x.pk}" tabindex="0" role="button">${NAME
 </div>`;
 
 /* — About — */
+const N_ACT = CUR.length;
+const N_ELITE = CUR.filter(e => disp(e.elo) >= 1600).length;
+const N_ALLSTAR = CUR.filter(e => disp(e.elo) >= 1560).length;
 panes.about = `
 <div class="ychips talktoc">
 <button class="ychip" data-goto="a-what">What this is</button>
@@ -914,15 +907,14 @@ panes.about = `
 <button class="ychip" data-goto="a-hist">History</button>
 </div>
 <h3 class="view" id="a-what">What this is</h3>
-<div class="card"><ul>
-<li><b>An Elo system for baseball</b> — the at-bat is the chess game; pitches are the moves</li>
-<li><b>Built from play itself</b> — every MLB at-bat since 2015, ~2 million rated matches</li>
-<li><b>One live number per player</b> — hitters and pitchers, updated nightly</li>
-<li><b>Pure hitting, pure pitching</b> — the at-bat duel only; fielding, baserunning, and position count for nothing</li>
-<li><b>A level, not a total</b> — nothing accumulates; a hot month moves it, playing time alone never does</li>
-<li><b>Form, not fame</b> — recent play counts most; reputation counts for nothing</li>
-<li><b>The answer to</b> — who is actually best right now, this season, and since 2015</li>
-</ul></div>
+<div class="card talk-art">
+<h4>The idea</h4>
+<p>An Elo system for baseball. The at-bat is the chess game and the pitches are its moves — every MLB at-bat since 2015, about two million rated matches, rebuilt from play itself every night.</p>
+<h4>One number per player</h4>
+<p>Hitters and pitchers each carry a single live rating, and it measures the at-bat duel only — fielding, baserunning, and position count for nothing.</p>
+<h4>A level, not a total</h4>
+<p>Nothing accumulates. A hot month moves the number; playing time alone never does, and reputation counts for nothing. It answers one question: who is actually best — right now, this season, and since 2015.</p>
+</div>
 <h3 class="view" id="a-how">How it works</h3>
 <div class="card talk-art">
 <h4>The match</h4>
@@ -934,32 +926,41 @@ panes.about = `
 </div>
 <h3 class="view" id="a-scale">Reading the scale</h3>
 <div class="card talk-art">
-<ul class="def">
-<li><span class="dt">1500</span><span>league average — everyone&rsquo;s starting line</span></li>
-<li><span class="dt">1560+</span><span>All-Star tier — top 10%</span></li>
-<li><span class="dt">1600+</span><span>elite — top 1%</span></li>
-<li><span class="dt">±9</span><span>daily wobble; gaps under 15 are ties</span></li>
-<li><span class="dt">°</span><span>provisional — under 1,000 career matches</span></li>
-<li><span class="dt">25 points</span><span>about one win per season</span></li>
-</ul>
-<p>Two tracks: <b>Career Elo</b> is continuous and carries winter to winter; <b>Season Elo</b> restarts everyone at 1500 each spring — a live race standing, not a season award. The Almanac keeps each year&rsquo;s highs; all-time high-water marks live on the Since 2015 tab.</p>
+<h4>The rungs</h4>
+<p>1500 is league average — everyone&rsquo;s starting line. 1560 opens the All-Star tier, the top 10%: tonight ${N_ALLSTAR} of ${N_ACT} active players stand there. 1600 is elite, the top 1% — tonight that&rsquo;s ${N_ELITE} players in all of baseball.</p>
+<h4>The noise</h4>
+<p>A rating wobbles about ±9 day to day, so gaps under 15 are ties. A ° marks a provisional rating — under 1,000 career matches; young ratings run hot and settle with play.</p>
+<h4>The stakes</h4>
+<p>25 points is about one win per season: 650 at-bats of that edge &asymp; 10 runs, the classic runs-per-win.</p>
+<h4>The two clocks</h4>
+<p><b>Career Elo</b> is continuous and carries winter to winter; <b>Season Elo</b> restarts everyone at 1500 each spring — a live race standing, not a season award. The Almanac keeps each year&rsquo;s highs; all-time marks live on the Since 2015 tab.</p>
 </div>
 <h3 class="view" id="a-faq">FAQ</h3>
-<div class="card"><ul class="faq">
-<li><span class="q">What decides an at-bat?</span><span class="a">Its run value — walks and homers big wins, strikeouts big losses; contact counts half what happened, half what the physics earned</span></li>
-<li><span class="q">Are hitter and pitcher ratings comparable?</span><span class="a">Yes — same matches, symmetric updates; the All-Star and elite tiers land within a few points across roles. The very top of the hitter list runs higher: a Soto or an &Aacute;lvarez sustains per-at-bat dominance no pitcher matches over a full year</span></li>
-<li><span class="q">Why did a hot hitter drop?</span><span class="a">Beating weak opponents pays little, and lucky contact only half-pays — the rating tracks deserved results against real competition</span></li>
-<li><span class="q">Is it predictive?</span><span class="a">The engine family calibrates well — its companion hit model says 64% and it happens 64.5% on 43,000 held-out games — but the betting market beat every wagering model we built — that verdict is under How it was built, below</span></li>
-<li><span class="q">Why not season stats?</span><span class="a">Stats are unadjusted totals — this is the last ~100 matches, opponent-adjusted and luck-damped</span></li>
-<li><span class="q">Where do pitch ratings fit?</span><span class="a">Matches rate players; moves rate pitches — the Filthiest board is the move-level record</span></li>
-<li><span class="q">Why can Elo and WAR disagree?</span><span class="a">WAR counts everything — position, baserunning, playing time; this rates only the at-bat duel, so a slow slugger can be elite here and modest there</span></li>
-</ul></div>
+<div class="card talk-art">
+<h4>What decides an at-bat?</h4>
+<p>Its run value — walks and homers big wins, strikeouts big losses; contact counts half what happened, half what the physics earned</p>
+<h4>Are hitter and pitcher ratings comparable?</h4>
+<p>Yes — same matches, symmetric updates; the All-Star and elite tiers land within a few points across roles. The very top of the hitter list runs higher: a Soto or an &Aacute;lvarez sustains per-at-bat dominance no pitcher matches over a full year</p>
+<h4>Why did a hot hitter drop?</h4>
+<p>Beating weak opponents pays little, and lucky contact only half-pays — the rating tracks deserved results against real competition</p>
+<h4>Is it predictive?</h4>
+<p>The engine family calibrates well — its companion hit model says 64% and it happens 64.5% on 43,000 held-out games — but the betting market beat every wagering model we built — that verdict is under How it was built, below</p>
+<h4>Why not season stats?</h4>
+<p>Stats are unadjusted totals — this is the last ~100 matches, opponent-adjusted and luck-damped</p>
+<h4>Where do pitch ratings fit?</h4>
+<p>Matches rate players; moves rate pitches — the Filthiest board is the move-level record</p>
+<h4>Why can Elo and WAR disagree?</h4>
+<p>WAR counts everything — position, baserunning, playing time; this rates only the at-bat duel, so a slow slugger can be elite here and modest there</p>
+</div>
 
 <h3 class="view" id="a-built">How it was built</h3>
 <div class="card talk-art">
+<h4>Chosen by prediction</h4>
 <p>Every design decision was chosen by prediction, not taste: fifteen rival systems — Glicko, pitch-type ratings, raw outcome grading — lost an out-of-sample shootout to this one. The engine family calibrates: the companion hit model says 64% and it happens 64.5%, on 43,000 held-out games.</p>
-<p>It was also humbled. ~18,000 props were graded against their closing lines and the market won — that verdict is why this is a ratings site and not a picks site.</p>
-<p>Data: MLB Statcast via pybaseball; Chadwick IDs. Not affiliated with Major League Baseball.</p>
+<h4>Humbled by the market</h4>
+<p>~18,000 props were graded against their closing lines and the market won — that verdict is why this is a ratings site and not a picks site.</p>
+<h4>The data</h4>
+<p>MLB Statcast via pybaseball; Chadwick IDs. Not affiliated with Major League Baseball.</p>
 <div class="take"><b>Tanji Systems, July 2026</b> — built by <a class="txt" href="https://merriman.xyz">Brian Merriman</a>; AI coding agents assisted implementation — direction, architecture, research design, and validation were his.</div>
 </div>
 <h3 class="view" id="a-hist">History</h3>
