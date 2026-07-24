@@ -748,7 +748,7 @@ for (const y of years){
     yv += `<h3 class="view">${label}</h3><div class="boards">`;
     for (const [cat, title, color] of CATS){
       let badges = null, note = '';
-      if (aw && v==='fresh' && cat!=='RP'){
+      if (aw && (v==='fresh' || v==='end') && cat!=='RP'){
         const [winners, chip, word] = cat==='B' ? [aw.mvp, 'MVP', 'MVP'] : [aw.cy, 'CY', 'Cy Young'];
         badges = {};
         const ids = new Set(cuts[v][cat].map(e=>String(e.id)));
