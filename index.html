@@ -68,9 +68,10 @@ h3.group + h3.view{margin-top:8px}
   padding:12px 16px;box-shadow:var(--bevel-raised)}
 .card h4{font:600 12px/1 var(--serif);font-variant:small-caps;letter-spacing:.06em;
   color:var(--ink-strong);margin:0 0 8px}
-.card h4 .dot{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px}
+.card h4 .dot, .figcap .dot{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px}
+.figcap .dot{width:7px;height:7px;margin-right:3px;vertical-align:-1px}
 ol.board{list-style:none;margin:0;padding:0}
-ol.board li{display:grid;grid-template-columns:22px minmax(0,1fr) 18px 68px 50px;
+ol.board li{display:grid;grid-template-columns:18px minmax(0,1fr) 18px 68px 50px;
   align-items:center;gap:6px;padding:4px 6px;border-radius:4px;position:relative;overflow:hidden}
 ol.board li .bar{position:absolute;left:0;top:0;bottom:0;opacity:.10;border-radius:4px;pointer-events:none}
 .rank{font-weight:700;font-variant-numeric:tabular-nums;color:var(--muted);text-align:right;font-size:11px}
@@ -105,8 +106,8 @@ li:first-child .rank{color:var(--warning)}
 .hero .big{font:700 32px/1.15 var(--sans);font-variant-numeric:tabular-nums;color:var(--accent)}
 .hero .sub{font-size:10.5px;color:var(--muted);font-variant-numeric:tabular-nums}
 .posgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
-ol.board.compact li{grid-template-columns:22px minmax(0,1fr) 18px 54px}
-ol.board.mover li{grid-template-columns:22px minmax(0,1fr) 18px 46px 46px}
+ol.board.compact li{grid-template-columns:18px minmax(0,1fr) 18px 54px}
+ol.board.mover li{grid-template-columns:18px minmax(0,1fr) 18px 46px 46px}
 ol.board.mover .delta{font-size:11px;text-align:right;font-variant-numeric:tabular-nums}
 .movers{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media (max-width:640px){.movers{grid-template-columns:1fr}}
@@ -191,6 +192,9 @@ section.year{scroll-margin-top:calc(var(--alnav-h, 47px) + 34px)}
   background:var(--page);padding-top:6px}
 #pane-almanac.mode-season .cut[data-cut="career"]{display:none}
 #pane-almanac.mode-career .cut[data-cut="season"]{display:none}
+.pname.hasaward{display:flex;align-items:center;gap:4px}
+.pname.hasaward .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pname.hasaward .award{flex:none;margin-left:0}
 .award{display:inline-block;font:700 9px/1.4 var(--sans);letter-spacing:.05em;
   color:var(--accent-hover);background:var(--accent-soft);
   border:1px solid var(--accent-soft-border);border-radius:2px;padding:0 3px;
@@ -311,7 +315,9 @@ ul.duels li{display:flex;justify-content:space-between;align-items:baseline;gap:
 ul.duels li:last-child{border-bottom:none}
 ul.duels .res{font-variant-numeric:tabular-nums;white-space:nowrap}
 .figcap{font-size:10.5px;color:var(--muted);margin:6px 0 0;max-width:66ch}
-ol.board.surge li{grid-template-columns:22px minmax(0,1fr) 18px 62px 74px 44px}
+.cfig{background:var(--page);border:1px solid var(--border);border-radius:4px;padding:8px 10px}
+.cchart polyline.bat{stroke:var(--tone-bat)}
+ol.board.surge li{grid-template-columns:16px minmax(0,1fr) 18px 70px 42px}
 ol.board.surge .rng{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums;
   text-align:right;white-space:nowrap}
 #pane-talk{max-width:720px}
@@ -327,8 +333,8 @@ ol.board.surge .rng{font-size:11px;color:var(--muted);font-variant-numeric:tabul
   body{padding:16px 10px 40px}
   .wkof{display:none}
   .mob-hide{display:none}
-  ol.board li{grid-template-columns:22px minmax(0,1fr) 26px 50px}
-  ol.board.surge li{grid-template-columns:22px minmax(0,1fr) 26px 74px 44px}
+  ol.board li{grid-template-columns:18px minmax(0,1fr) 26px 50px}
+  ol.board.surge li{grid-template-columns:16px minmax(0,1fr) 26px 70px 42px}
   .bref{width:22px;height:22px;font-size:12px}
   nav.tabs button{padding:12px 14px}
   table.live{min-width:420px}
@@ -385,8 +391,9 @@ function boardHTML(list, color, compact, badges, side){
     const wkof = compact ? '' :
       (e.wk ? `<span class="wkof">wk ${fmtWk(e.wk)}</span>` : '<span class="wkof"></span>');
     const badge = badges && badges[e.id] ? `<span class="award" title="${badges[e.id].t}">${badges[e.id].c}</span>` : '';
+    const nm = badge ? `<span class="nm">${NAMES[e.id]||e.id}</span>${badge}` : (NAMES[e.id]||e.id);
     return `<li${e.off ? ' class="off"' : ''}><span class="bar" style="background:${color};width:${w}%"></span>`+
-      `<span class="rank">${i+1}</span><span class="pname" data-pk="${e.id}${side||'b'}" tabindex="0" role="button">${NAMES[e.id]||e.id}${badge}</span>`+
+      `<span class="rank">${i+1}</span><span class="pname${badge?' hasaward':''}" data-pk="${e.id}${side||'b'}" tabindex="0" role="button">${nm}</span>`+
       brefLink(e.id) + wkof + `<span class="elo">${disp(e.r)}</span></li>`;
   }).join('') + '</ol>';
 }
@@ -712,8 +719,8 @@ const surgesByYear = {};
       surgesByYear[y][c] = surgesByYear[y][c].sort((a,b)=>b.g-a.g).slice(0,10);
 }
 const surgeBoard = list => `<ol class="board surge">` + list.map((e,i)=>
-  `<li><span class="rank">${i+1}</span><span class="pname" data-pk="${e.id}${e.side}" tabindex="0" role="button">${NAMES[e.id]||e.id}</span>`+
-  brefLink(e.id) + `<span class="wkof">wk ${fmtWk(e.wk)}</span>`+
+  `<li title="week of ${fmtWk(e.wk)}"><span class="rank">${i+1}</span><span class="pname" data-pk="${e.id}${e.side}" tabindex="0" role="button">${NAMES[e.id]||e.id}</span>`+
+  brefLink(e.id) +
   `<span class="rng">${Math.round(1500+e.v0*SCALE)} &rarr; ${Math.round(1500+e.v1*SCALE)}</span>`+
   `<span class="elo up">▲${Math.round(e.g*SCALE)}</span></li>`).join('') + '</ol>';
 
@@ -780,27 +787,35 @@ panes.almanac = yv;
 panes.talk = `
 <div class="ychips talktoc">
 <button class="ychip" data-goto="t-fall">The great collapses</button>
-<button class="ychip" data-goto="t-origin">Born from a failed bet</button>
+<button class="ychip" data-goto="t-peak">The 1697</button>
 <button class="ychip" data-goto="t-alonso">The Alonso question</button>
 <button class="ychip" data-goto="t-winter">Winter freeze</button>
-<button class="ychip" data-goto="t-sale">Sale &rsquo;24</button>
+<button class="ychip" data-goto="t-ohtani">The two Ohtanis</button>
 </div>
 <h3 class="view" id="t-fall">The great collapses <span class="when">Jul 23</span></h3>
-<p class="talkintro">The biggest peak-to-trough falls since 2015, computed nightly from the rating series — the red stretch is the fall; click a name for the full profile.</p>
-<div class="movers" id="collapses"></div>
-<p class="talkintro">The pattern: collapses are slow. The rating never saw a cliff — only long descents nobody called in time.</p>
-<h3 class="view" id="t-origin">Born from a failed betting model <span class="when">Jul 22</span></h3>
-<p class="talkintro">The pre-registered test that killed the wagering model and founded the site.</p>
+<p class="talkintro">Six careers, six long descents — computed nightly from the rating series.</p>
 <div class="card talk-art">
-<p>The first thing built here was not a rating. It was a strikeout-prop model with a full pipeline behind it — odds capture, closing lines, a graded ledger — and one rule, written down before any bet: beat the closing line or quit.</p>
-<div class="figrow">
-<div class="fig"><div class="lbl">Props graded</div><div class="val">~18,000</div></div>
-<div class="fig"><div class="lbl">Market snapshots</div><div class="val">35,000</div></div>
-<div class="fig"><div class="lbl">Edge found</div><div class="val no">none</div></div>
+<p>The biggest peak-to-trough falls since 2015. The red stretch is the fall; click a name for the full profile.</p>
+<div class="movers" id="collapses"></div>
+<div class="take"><b>The pattern</b> — collapses are slow. The rating never saw a cliff, only long descents nobody called in time.</div>
 </div>
-<p>The market won. Everything the model knew, the closing line knew sooner; every angle we tried graded out flat against the close. So we quit, exactly as promised.</p>
-<p>But the ratings underneath were too much fun to bury. The wagering died; the engine became this site.</p>
-<div class="take"><b>The upshot</b> — don&rsquo;t bet with this. We checked harder than anyone selling picks ever will.</div>
+<h3 class="view" id="t-peak">1697 — the highest level ever held <span class="when">Jul 23</span></h3>
+<p class="talkintro">Eleven seasons of peaks, and the one that stands above them all.</p>
+<div class="card talk-art">
+<p>On May 5, 2025, <span data-pk="592450b" tabindex="0" role="button">Aaron Judge</span> reached 1697 — the highest rating any player has held in the data. A peak here is not a hot week: the rating remembers about a hundred matches, so a number like this means months of dominating every at-bat against live competition.</p>
+<div id="peakfig">
+<div id="peakchart"></div>
+<p class="figcap">Aaron Judge, career line. The dashed rule is 1600 — elite, top 1%. The dot is May 5, 2025.</p>
+</div>
+<p>The all-time board, for the record:</p>
+<ul class="duels">
+<li><span data-pk="592450b" tabindex="0" role="button">Aaron Judge</span><span class="res">1697 · May &rsquo;25</span></li>
+<li><span data-pk="665742b" tabindex="0" role="button">Juan Soto</span><span class="res">1678 · Sep &rsquo;21</span></li>
+<li><span data-pk="545361b" tabindex="0" role="button">Mike Trout</span><span class="res">1664 · Jun &rsquo;19</span></li>
+<li><span data-pk="594798p" tabindex="0" role="button">Jacob deGrom</span><span class="res">1659 · Sep &rsquo;22</span></li>
+<li><span data-pk="605141b" tabindex="0" role="button">Mookie Betts</span><span class="res">1657 · Apr &rsquo;24</span></li>
+</ul>
+<div class="take"><b>The shape of it</b> — four hitters and one pitcher: sustaining dominance over 650 at-bats is a taller mountain than thirty starts, and deGrom is the only pitcher who ever climbed this high.</div>
 </div>
 <h3 class="view" id="t-alonso">Does hitting hard rule the ratings? <span class="when">Jul 23</span></h3>
 <p class="talkintro">The day the ratings learned that soft contact can be a skill.</p>
@@ -829,17 +844,16 @@ panes.talk = `
 <p>Every adjustment lost to the freeze. So ratings hold flat from the last pitch of fall to the first of spring — the grey stretches on every chart.</p>
 <div class="take"><b>The lesson</b> — winter tells you nothing; the first weeks of April tell you plenty.</div>
 </div>
-<h3 class="view" id="t-sale">2024 Chris Sale — a Cy Young that never cracked elite? <span class="when">Jul 23</span></h3>
-<p class="talkintro">What a rating owes a Triple Crown.</p>
+<h3 class="view" id="t-ohtani">The two ratings of Shohei Ohtani <span class="when">Jul 23</span></h3>
+<p class="talkintro">The only player in the data who is two players.</p>
 <div class="card talk-art">
-<p><span data-pk="519242p" tabindex="0" role="button">Chris Sale</span> won the 2024 pitching Triple Crown. This rating never gave him a top-1% stretch that year — his line topped out at 1588, a dozen points shy of the 1600 elite rule. A mistake?</p>
-<div id="salefig">
-<div id="salechart"></div>
-<p class="figcap">Career line, 2024 in bold. The dashed rule is 1600 — elite, top 1%. Vintage 2018 Sale lived above it (peak 1615); the Cy Young year never touched it.</p>
+<p>Every player here holds one rating. <span data-pk="660271b" tabindex="0" role="button">Shohei Ohtani</span> holds two — the system rates the at-bat duel from both chairs, and he sits in both, a full hitter&rsquo;s career and a full pitcher&rsquo;s career running on the same clock.</p>
+<div id="shofig">
+<div id="shochart"></div>
+<p class="figcap"><span class="dot" style="background:var(--tone-bat)"></span> batting · <span class="dot" style="background:var(--accent)"></span> pitching — both careers on one clock. Batting peaked at 1639 in May &rsquo;24; the flat stretch on the pitching line is the elbow, frozen while he only hit.</p>
 </div>
-<p>No — a different question. The award pays a season total: innings eaten, wins, the defense behind him, runners stranded. This rating is a level — how good, right now, per at-bat. 2024 Sale was 29 starts of steady All-Star-tier form with no untouchable run in them.</p>
-<p>Both verdicts stand. Best season of 2024: Sale, in a walk. Best form of 2024: never quite him — and his 2026 line already sits back at his Cy-year best.</p>
-<div class="take"><b>Both are true</b> — best season and best form are different questions.</div>
+<p>Today the batting line stands at 1603 and the pitching line at 1579 — and the pitching line&rsquo;s all-time high is this summer: 1590 in June, two years after the surgery.</p>
+<div class="take"><b>No precedent</b> — nobody else in eleven seasons has held two live ratings at once.</div>
 </div>`;
 
 /* — About — */
@@ -1206,31 +1220,50 @@ document.addEventListener('keydown', ev => {
   }
   cands.sort((a,b) => b.d.dd - a.d.dd);
   wrap.innerHTML = cands.slice(0,6).map(({pk, e, d}) =>
-    `<div class="card"><div class="cHead"><span data-pk="${pk}" tabindex="0" role="button">${NAMES[e.id]||e.id}</span>${brefLink(e.id)}</div>`+
+    `<div class="cfig"><div class="cHead"><span data-pk="${pk}" tabindex="0" role="button">${NAMES[e.id]||e.id}</span>${brefLink(e.id)}</div>`+
     `<div class="cNums"><b>${Math.round(1500 + d.hi*SCALE/1000)}</b> &rarr; <b>${Math.round(1500 + d.lo*SCALE/1000)}</b> `+
     `<span class="dn">▼${Math.round(d.dd*SCALE/1000)}</span> · ${fmtWk(DATA.weeks[d.hiI])} – ${fmtWk(DATA.weeks[d.loI])}</div>`+
     mini(pk, d) + '</div>').join('');
 })();
-/* — Sale discussion figure: career line, 2024 emphasized, elite rule dashed — */
-(function fillSaleFig(){
-  const wrap = document.getElementById('salechart');
-  if (!wrap) return;
-  const s = DATA.series && DATA.series['519242p'];
-  if (!s || s.length < 8){ const f = document.getElementById('salefig'); if (f) f.remove(); return; }
-  const pts = [];
-  for (let k = 0; k < s.length; k += 2) pts.push([s[k], s[k+1]]);
-  const W = DATA.weeks.length;
-  const ELITE = 100*1000/SCALE;
-  const lo = Math.min(ELITE, ...pts.map(p=>p[1])), hi = Math.max(ELITE, ...pts.map(p=>p[1]));
-  const pad = (hi-lo)*.1 || 1, vw = 300, vh = 90;
+/* — discussion figures: shared mini-chart geometry over the full week axis — */
+function talkChart(specs, opts){
+  const W = DATA.weeks.length, vw = 300, vh = 90;
+  const all = specs.flatMap(s => s.pts.map(p=>p[1])).concat(opts.elite ? [opts.elite] : []);
+  const lo = Math.min(...all), hi = Math.max(...all);
+  const pad = (hi-lo)*.1 || 1;
   const X = i => 4 + (vw-8)*i/(W-1);
   const Y = v => vh - 6 - (vh-12)*(v-(lo-pad))/((hi-lo)+2*pad);
   const line = (arr, cls) => arr.length > 1
     ? `<polyline${cls?` class="${cls}"`:''} points="${arr.map(p=>`${X(p[0]).toFixed(1)},${Y(p[1]).toFixed(1)}`).join(' ')}"/>` : '';
-  const in24 = pts.filter(p => DATA.weeks[p[0]].startsWith('2024'));
-  wrap.innerHTML = `<svg class="cchart" viewBox="0 0 ${vw} ${vh}" aria-hidden="true">`+
-    `<line class="ref" x1="4" x2="${vw-4}" y1="${Y(ELITE).toFixed(1)}" y2="${Y(ELITE).toFixed(1)}"/>`+
-    line(pts,'') + line(in24,'hl') + `</svg>`;
+  let svg = `<svg class="cchart" viewBox="0 0 ${vw} ${vh}" aria-hidden="true">`;
+  if (opts.elite) svg += `<line class="ref" x1="4" x2="${vw-4}" y1="${Y(opts.elite).toFixed(1)}" y2="${Y(opts.elite).toFixed(1)}"/>`;
+  for (const s of specs) svg += line(s.pts, s.cls);
+  if (opts.dot){
+    const d = opts.dot;
+    svg += `<circle cx="${X(d[0]).toFixed(1)}" cy="${Y(d[1]).toFixed(1)}" r="2.5"/>`;
+  }
+  return svg + '</svg>';
+}
+const seriesPts = pk => {
+  const s = DATA.series && DATA.series[pk];
+  if (!s || s.length < 8) return null;
+  const pts = []; for (let k = 0; k < s.length; k += 2) pts.push([s[k], s[k+1]]);
+  return pts;
+};
+(function fillPeakFig(){
+  const wrap = document.getElementById('peakchart');
+  if (!wrap) return;
+  const pts = seriesPts('592450b');
+  if (!pts){ const f = document.getElementById('peakfig'); if (f) f.remove(); return; }
+  const peak = pts.reduce((a,b) => b[1] > a[1] ? b : a);
+  wrap.innerHTML = talkChart([{pts}], {elite: 100*1000/SCALE, dot: peak});
+})();
+(function fillShoFig(){
+  const wrap = document.getElementById('shochart');
+  if (!wrap) return;
+  const bat = seriesPts('660271b'), pit = seriesPts('660271p');
+  if (!bat || !pit){ const f = document.getElementById('shofig'); if (f) f.remove(); return; }
+  wrap.innerHTML = talkChart([{pts: bat, cls: 'bat'}, {pts: pit}], {});
 })();
 if (/^#p-\w+$/.test(BOOT_HASH)) openPlayer(BOOT_HASH.slice(3));
 if (typeof window !== 'undefined' && window.addEventListener)
