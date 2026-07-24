@@ -737,11 +737,14 @@ let yv = `<div class="alnav"><div class="seg" id="alseg">`+
 for (const y of years){
   const cuts = DATA.yearly[y].xrv;
   const aw = (DATA.awards||{})[y];
-  const views = [['fresh', y===latest ? 'Right now' : 'Season end'],
-                 ['hot','Hottest stretches — biggest four-week climbs'],
+  // boards show the year's HIGHEST level (with its week), not the season-end
+  // snapshot — most peaks land late, but a faded star keeps his summer.
+  // 'hot' is computed on the career series, so it lives in the career cut.
+  const views = [['fresh_peak', y===latest ? 'Highest so far' : 'Highest of the season'],
                  ['mid','Midseason — as of July 1'],
-                 ['end', y===latest ? 'Right now' : 'Season end']];
-  const groups = {fresh: `Season Elo <span class="sub">— everyone restarts at 1500 in spring</span>`,
+                 ['hot','Hottest stretches — biggest four-week climbs'],
+                 ['peak', y===latest ? 'Highest so far' : 'Highest of the season']];
+  const groups = {fresh_peak: `Season Elo <span class="sub">— everyone restarts at 1500 in spring</span>`,
                   mid: `Career Elo <span class="sub">— continuous, carries winter to winter</span>`};
   yv += `<section class="year" id="yr-${y}"><h2 class="year">${y}</h2><div class="cut" data-cut="season">`;
   for (const [v, label] of views){
@@ -762,7 +765,7 @@ for (const y of years){
     yv += `<h3 class="view">${label}</h3><div class="boards">`;
     for (const [cat, title, color] of CATS){
       let badges = null, note = '';
-      if (aw && (v==='fresh' || v==='end') && cat!=='RP'){
+      if (aw && (v==='fresh_peak' || v==='peak') && cat!=='RP'){
         const [winners, chip, word] = cat==='B' ? [aw.mvp, 'MVP', 'MVP'] : [aw.cy, 'CY', 'Cy Young'];
         badges = {};
         const ids = new Set(cuts[v][cat].map(e=>String(e.id)));
@@ -774,7 +777,7 @@ for (const y of years){
         });
         if (off.length) note = `<div class="subnote">` + off.map(w =>
           `${w.lg} ${word}: <b>${w.id!=null ? (NAMES[w.id]||w.id) : w.name}</b>` +
-          (w.peak!=null ? ` · season peak ${disp(w.peak)}` : '')).join('<br>') + '</div>';
+          (w.peak!=null ? ` — season-Elo peak ${disp(w.peak)}, below this board&rsquo;s cut` : '')).join('<br>') + '</div>';
       }
       yv += `<div class="card"><h4><span class="dot" style="background:${color}"></span>${title}</h4>`+
             boardHTML(cuts[v][cat], color, false, badges, cat==='B'?'b':'p') + note + '</div>';
