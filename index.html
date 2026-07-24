@@ -290,6 +290,27 @@ ol.board li.off .pname, ol.board li.off .elo{color:var(--muted)}
 .cchart polyline.fall{stroke:var(--error);stroke-width:1.7;opacity:1}
 .cchart circle{fill:var(--accent)}
 .cchart circle.lo{fill:var(--error)}
+.cchart line.ref{stroke:var(--border-strong);stroke-width:1;stroke-dasharray:3 3}
+.cchart polyline.hl{stroke-width:1.8;opacity:1}
+.talk-art p{font-size:12.5px;line-height:1.55;color:var(--ink);margin:0 0 8px;max-width:66ch}
+.talk-art p:last-child{margin-bottom:0}
+.talk-art .take{border-top:1px solid var(--sunken);margin-top:10px;padding-top:8px;
+  font-size:11.5px;color:var(--muted);max-width:66ch}
+.talk-art .take b{color:var(--ink-strong)}
+.talk-art [data-pk]{cursor:pointer;font-weight:600;color:var(--ink-strong)}
+.talk-art [data-pk]:hover{text-decoration:underline;text-decoration-color:var(--accent);text-underline-offset:2px}
+.talk-art [data-pk]:focus-visible{outline:1px solid var(--accent);outline-offset:1px}
+.figrow{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
+.figrow .fig{flex:1 1 120px;background:var(--page);border:1px solid var(--border);border-radius:4px;padding:8px 10px}
+.figrow .lbl{font:700 9px/1.1 var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.figrow .val{font:700 18px/1.3 var(--sans);font-variant-numeric:tabular-nums;color:var(--ink-strong);margin-top:2px}
+.figrow .val.no{color:var(--error)}
+ul.duels{list-style:none;margin:10px 0;padding:0;max-width:46ch}
+ul.duels li{display:flex;justify-content:space-between;align-items:baseline;gap:12px;
+  padding:4px 2px;border-bottom:1px solid var(--sunken);font-size:12px}
+ul.duels li:last-child{border-bottom:none}
+ul.duels .res{font-variant-numeric:tabular-nums;white-space:nowrap}
+.figcap{font-size:10.5px;color:var(--muted);margin:6px 0 0;max-width:66ch}
 .pname[data-pk]{cursor:pointer}
 .pname[data-pk]:hover{text-decoration:underline;text-decoration-color:var(--accent);text-underline-offset:2px}
 .pname[data-pk]:focus-visible{outline:1px solid var(--accent);outline-offset:1px}
@@ -749,38 +770,57 @@ panes.talk = `
 <div class="movers" id="collapses"></div>
 <p class="talkintro">The pattern: collapses are slow. The rating never saw a cliff — only long descents nobody called in time.</p>
 <h3 class="view">Born from a failed betting model · Jul 22</h3>
-<div class="card"><ul>
-<li><b>The origin</b> — this site began as a betting model: strikeout props, hit props, a full pipeline</li>
-<li><b>The test</b> — ~18,000 props graded against their closing lines (35,000 market snapshots); verdict pre-registered: beat the close or quit</li>
-<li><b>The verdict</b> — no edge; the market already knew everything we built, and knew it sooner</li>
-<li><b>The pivot</b> — the ratings were too much fun to bury, so the model became this site</li>
-<li><b>The upshot</b> — don&rsquo;t bet with this; we checked harder than anyone selling picks ever will</li>
-</ul></div>
+<p class="talkintro">The pre-registered test that killed the wagering model and founded the site.</p>
+<div class="card talk-art">
+<p>The first thing built here was not a rating. It was a strikeout-prop model with a full pipeline behind it — odds capture, closing lines, a graded ledger — and one rule, written down before any bet: beat the closing line or quit.</p>
+<div class="figrow">
+<div class="fig"><div class="lbl">Props graded</div><div class="val">~18,000</div></div>
+<div class="fig"><div class="lbl">Market snapshots</div><div class="val">35,000</div></div>
+<div class="fig"><div class="lbl">Edge found</div><div class="val no">none</div></div>
+</div>
+<p>The market won. Everything the model knew, the closing line knew sooner; every angle we tried graded out flat against the close. So we quit, exactly as promised.</p>
+<p>But the ratings underneath were too much fun to bury. The wagering died; the engine became this site.</p>
+<div class="take"><b>The upshot</b> — don&rsquo;t bet with this. We checked harder than anyone selling picks ever will.</div>
+</div>
 <h3 class="view">Does hitting hard rule the ratings? (the Alonso question) · Jul 23</h3>
-<div class="card"><ul>
-<li><b>The worry</b> — physics grading loves crushers like Alonso; does it rob contact artists like Arráez?</li>
-<li><b>The test</b> — regrade every at-bat as a mix of what happened and what the physics earned; let out-of-sample prediction pick the mix</li>
-<li><b>The result</b> — 50/50 won, and it survived a park control; placement and speed craft is real skill</li>
-<li><b>The fallout</b> — same day: Alonso #8 &rarr; #13, Arráez #232 &rarr; #99, Freeman into the top 3</li>
-<li><b>The lesson</b> — pure &ldquo;deserved outcomes&rdquo; grading confiscated a skill it couldn&rsquo;t see</li>
-</ul></div>
+<p class="talkintro">The day the ratings learned that soft contact can be a skill.</p>
+<div class="card talk-art">
+<p>Physics grading loves crushers. Grade every ball off the bat by exit velocity and launch angle and <span data-pk="624413b" tabindex="0" role="button">Pete Alonso</span> looks inevitable — but does the same grading rob <span data-pk="650333b" tabindex="0" role="button">Luis Arráez</span>, who hits nothing hard and everything where fielders aren&rsquo;t?</p>
+<p>The test: regrade every at-bat as a mix of what actually happened and what the physics says it earned, and let out-of-sample prediction pick the mix. If placement were pure luck, actual outcomes would get no vote.</p>
+<p>They got half of it. The 50/50 blend won the prediction contest and survived a park control — batted-ball craft is a persistent skill, not noise. The same day, the boards moved:</p>
+<ul class="duels">
+<li><span data-pk="624413b" tabindex="0" role="button">Pete Alonso</span><span class="res">#8 &rarr; #13 <span class="dn">▼</span></span></li>
+<li><span data-pk="650333b" tabindex="0" role="button">Luis Arráez</span><span class="res">#232 &rarr; #99 <span class="up">▲</span></span></li>
+<li><span data-pk="518692b" tabindex="0" role="button">Freddie Freeman</span><span class="res">into the top 3 <span class="up">▲</span></span></li>
+</ul>
+<div class="take"><b>The lesson</b> — pure &ldquo;deserved outcomes&rdquo; grading confiscated a skill it couldn&rsquo;t see.</div>
+</div>
 <h3 class="view">Why ratings freeze all winter · Jul 23</h3>
-<div class="card"><ul>
-<li><b>The question</b> — what should a rating do over the offseason?</li>
-<li><b>The candidates</b> — decay toward 1500, regress by age, carry late-season momentum</li>
-<li><b>The test</b> — ten offseasons replayed, judged by who predicts spring best</li>
-<li><b>The winner</b> — do nothing; every adjustment lost to the freeze</li>
-<li><b>The lesson</b> — winter tells you nothing; the first weeks of April tell you plenty</li>
-</ul></div>
-<h3 class="view">2024 Chris Sale — a Cy Young at season peak 1545? · Jul 23</h3>
-<div class="card"><ul>
-<li><b>The puzzle</b> — pitching Triple Crown, yet never a top-1% stretch here</li>
-<li><b>The split</b> — the award pays a season total; this rating is a level</li>
-<li><b>What voters count that we don&rsquo;t</b> — innings, wins, the defense behind him, strand luck</li>
-<li><b>The verdict</b> — 29 starts of steady top-15% form, no untouchable run</li>
-<li><b>The kicker</b> — his 2026 form rates higher than his Cy year ever did</li>
-<li><b>Both are true</b> — best season and best form are different questions</li>
-</ul></div>`;
+<p class="talkintro">Ten replayed offseasons, one boring winner.</p>
+<div class="card talk-art">
+<p>Every October, the same question: what should a rating do while nobody plays? Intuition offers candidates — surely a 35-year-old should drift down over the winter; surely a hot September should carry into April.</p>
+<p>We replayed ten offseasons and let each candidate predict the following spring. The scoreboard:</p>
+<ul class="duels">
+<li><span>Decay toward 1500</span><span class="res dn">lost</span></li>
+<li><span>Regress by age</span><span class="res dn">lost</span></li>
+<li><span>Carry September momentum</span><span class="res dn">lost</span></li>
+<li><span>Do nothing</span><span class="res up">won</span></li>
+</ul>
+<p>Every adjustment lost to the freeze. So ratings hold flat from the last pitch of fall to the first of spring — the grey stretches on every chart.</p>
+<div class="take"><b>The lesson</b> — winter tells you nothing; the first weeks of April tell you plenty.</div>
+</div>
+<h3 class="view">2024 Chris Sale — a Cy Young that never cracked elite? · Jul 23</h3>
+<p class="talkintro">What a rating owes a Triple Crown.</p>
+<div class="card talk-art">
+<p><span data-pk="519242p" tabindex="0" role="button">Chris Sale</span> won the 2024 pitching Triple Crown. This rating never gave him a top-1% stretch that year — his line topped out at 1588, a dozen points shy of the 1600 elite rule. A mistake?</p>
+<div id="salefig">
+<div id="salechart"></div>
+<p class="figcap">Career line, 2024 in bold. The dashed rule is 1600 — elite, top 1%. Vintage 2018 Sale lived above it (peak 1615); the Cy Young year never touched it.</p>
+</div>
+<p>No — a different question. The award pays a season total: innings eaten, wins, the defense behind him, runners stranded. This rating is a level — how good, right now, per at-bat. 2024 Sale was 29 starts of steady All-Star-tier form with no untouchable run in them.</p>
+<p>Both verdicts stand. Best season of 2024: Sale, in a walk. Best form of 2024: never quite him — and his 2026 line already sits back at his Cy-year best.</p>
+<div class="take"><b>Both are true</b> — best season and best form are different questions.</div>
+</div>`;
 
 /* — About — */
 panes.about = `
@@ -1144,6 +1184,27 @@ document.addEventListener('keydown', ev => {
     `<div class="cNums"><b>${Math.round(1500 + d.hi*SCALE/1000)}</b> &rarr; <b>${Math.round(1500 + d.lo*SCALE/1000)}</b> `+
     `<span class="dn">▼${Math.round(d.dd*SCALE/1000)}</span> · ${fmtWk(DATA.weeks[d.hiI])} – ${fmtWk(DATA.weeks[d.loI])}</div>`+
     mini(pk, d) + '</div>').join('');
+})();
+/* — Sale discussion figure: career line, 2024 emphasized, elite rule dashed — */
+(function fillSaleFig(){
+  const wrap = document.getElementById('salechart');
+  if (!wrap) return;
+  const s = DATA.series && DATA.series['519242p'];
+  if (!s || s.length < 8){ const f = document.getElementById('salefig'); if (f) f.remove(); return; }
+  const pts = [];
+  for (let k = 0; k < s.length; k += 2) pts.push([s[k], s[k+1]]);
+  const W = DATA.weeks.length;
+  const ELITE = 100*1000/SCALE;
+  const lo = Math.min(ELITE, ...pts.map(p=>p[1])), hi = Math.max(ELITE, ...pts.map(p=>p[1]));
+  const pad = (hi-lo)*.1 || 1, vw = 300, vh = 90;
+  const X = i => 4 + (vw-8)*i/(W-1);
+  const Y = v => vh - 6 - (vh-12)*(v-(lo-pad))/((hi-lo)+2*pad);
+  const line = (arr, cls) => arr.length > 1
+    ? `<polyline${cls?` class="${cls}"`:''} points="${arr.map(p=>`${X(p[0]).toFixed(1)},${Y(p[1]).toFixed(1)}`).join(' ')}"/>` : '';
+  const in24 = pts.filter(p => DATA.weeks[p[0]].startsWith('2024'));
+  wrap.innerHTML = `<svg class="cchart" viewBox="0 0 ${vw} ${vh}" aria-hidden="true">`+
+    `<line class="ref" x1="4" x2="${vw-4}" y1="${Y(ELITE).toFixed(1)}" y2="${Y(ELITE).toFixed(1)}"/>`+
+    line(pts,'') + line(in24,'hl') + `</svg>`;
 })();
 if (/^#p-\w+$/.test(BOOT_HASH)) openPlayer(BOOT_HASH.slice(3));
 if (typeof window !== 'undefined' && window.addEventListener)
