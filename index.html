@@ -737,9 +737,10 @@ let yv = `<div class="alnav"><div class="seg" id="alseg">`+
 for (const y of years){
   const cuts = DATA.yearly[y].xrv;
   const aw = (DATA.awards||{})[y];
+  // 'hot' is computed on the career series, so it lives in the career cut
   const views = [['fresh', y===latest ? 'Right now' : 'Season end'],
-                 ['hot','Hottest stretches — biggest four-week climbs'],
                  ['mid','Midseason — as of July 1'],
+                 ['hot','Hottest stretches — biggest four-week climbs'],
                  ['end', y===latest ? 'Right now' : 'Season end']];
   const groups = {fresh: `Season Elo <span class="sub">— everyone restarts at 1500 in spring</span>`,
                   mid: `Career Elo <span class="sub">— continuous, carries winter to winter</span>`};
