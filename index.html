@@ -295,7 +295,7 @@ ol.board li.off .pname, ol.board li.off .elo{color:var(--muted)}
 .talk-art p{font-size:13px;line-height:1.5;color:var(--ink);margin:0 0 8px;max-width:66ch}
 .talk-art p:last-child{margin-bottom:0}
 .talk-art .take{border-top:1px solid var(--sunken);margin-top:10px;padding-top:8px;
-  font-size:11.5px;color:var(--muted);max-width:66ch}
+  font-size:11.5px;color:var(--muted)}
 .talk-art .take b{color:var(--ink-strong)}
 .talk-art [data-pk]{cursor:pointer;font-weight:600;color:var(--ink-strong)}
 .talk-art [data-pk]:hover{text-decoration:underline;text-decoration-color:var(--accent);text-underline-offset:2px}
@@ -305,7 +305,7 @@ ol.board li.off .pname, ol.board li.off .elo{color:var(--muted)}
 .figrow .lbl{font:700 9px/1.1 var(--sans);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
 .figrow .val{font:700 17px/1.3 var(--sans);font-variant-numeric:tabular-nums;color:var(--ink-strong);margin-top:2px}
 .figrow .val.no{color:var(--error)}
-ul.duels{list-style:none;margin:10px 0;padding:0;max-width:46ch}
+ul.duels{list-style:none;margin:10px 0;padding:0}
 ul.duels li{display:flex;justify-content:space-between;align-items:baseline;gap:12px;
   padding:4px 2px;border-bottom:1px solid var(--sunken);font-size:12px}
 ul.duels li:last-child{border-bottom:none}
@@ -314,7 +314,11 @@ ul.duels .res{font-variant-numeric:tabular-nums;white-space:nowrap}
 ol.board.surge li{grid-template-columns:22px minmax(0,1fr) 18px 62px 74px 44px}
 ol.board.surge .rng{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums;
   text-align:right;white-space:nowrap}
-#pane-talk h3.view{scroll-margin-top:12px}
+#pane-talk{max-width:720px}
+#pane-talk h3.view{scroll-margin-top:12px;font:600 16px/1.3 var(--serif);font-variant:small-caps;
+  letter-spacing:.04em;text-transform:none;color:var(--ink-strong);margin:24px 0 6px}
+#pane-talk h3.view .when{font:700 9px/1.1 var(--sans);font-variant:normal;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--muted);margin-left:8px;vertical-align:3px}
 .talktoc{margin:0 0 4px}
 .pname[data-pk]{cursor:pointer}
 .pname[data-pk]:hover{text-decoration:underline;text-decoration-color:var(--accent);text-underline-offset:2px}
@@ -781,11 +785,11 @@ panes.talk = `
 <button class="ychip" data-goto="t-winter">Winter freeze</button>
 <button class="ychip" data-goto="t-sale">Sale &rsquo;24</button>
 </div>
-<h3 class="view" id="t-fall">The great collapses · Jul 23</h3>
+<h3 class="view" id="t-fall">The great collapses <span class="when">Jul 23</span></h3>
 <p class="talkintro">The biggest peak-to-trough falls since 2015, computed nightly from the rating series — the red stretch is the fall; click a name for the full profile.</p>
 <div class="movers" id="collapses"></div>
 <p class="talkintro">The pattern: collapses are slow. The rating never saw a cliff — only long descents nobody called in time.</p>
-<h3 class="view" id="t-origin">Born from a failed betting model · Jul 22</h3>
+<h3 class="view" id="t-origin">Born from a failed betting model <span class="when">Jul 22</span></h3>
 <p class="talkintro">The pre-registered test that killed the wagering model and founded the site.</p>
 <div class="card talk-art">
 <p>The first thing built here was not a rating. It was a strikeout-prop model with a full pipeline behind it — odds capture, closing lines, a graded ledger — and one rule, written down before any bet: beat the closing line or quit.</p>
@@ -798,7 +802,7 @@ panes.talk = `
 <p>But the ratings underneath were too much fun to bury. The wagering died; the engine became this site.</p>
 <div class="take"><b>The upshot</b> — don&rsquo;t bet with this. We checked harder than anyone selling picks ever will.</div>
 </div>
-<h3 class="view" id="t-alonso">Does hitting hard rule the ratings? (the Alonso question) · Jul 23</h3>
+<h3 class="view" id="t-alonso">Does hitting hard rule the ratings? <span class="when">Jul 23</span></h3>
 <p class="talkintro">The day the ratings learned that soft contact can be a skill.</p>
 <div class="card talk-art">
 <p>Physics grading loves crushers. Grade every ball off the bat by exit velocity and launch angle and <span data-pk="624413b" tabindex="0" role="button">Pete Alonso</span> looks inevitable — but does the same grading rob <span data-pk="650333b" tabindex="0" role="button">Luis Arráez</span>, who hits nothing hard and everything where fielders aren&rsquo;t?</p>
@@ -811,7 +815,7 @@ panes.talk = `
 </ul>
 <div class="take"><b>The lesson</b> — pure &ldquo;deserved outcomes&rdquo; grading confiscated a skill it couldn&rsquo;t see.</div>
 </div>
-<h3 class="view" id="t-winter">Why ratings freeze all winter · Jul 23</h3>
+<h3 class="view" id="t-winter">Why ratings freeze all winter <span class="when">Jul 23</span></h3>
 <p class="talkintro">Ten replayed offseasons, one boring winner.</p>
 <div class="card talk-art">
 <p>Every October, the same question: what should a rating do while nobody plays? Intuition offers candidates — surely a 35-year-old should drift down over the winter; surely a hot September should carry into April.</p>
@@ -825,7 +829,7 @@ panes.talk = `
 <p>Every adjustment lost to the freeze. So ratings hold flat from the last pitch of fall to the first of spring — the grey stretches on every chart.</p>
 <div class="take"><b>The lesson</b> — winter tells you nothing; the first weeks of April tell you plenty.</div>
 </div>
-<h3 class="view" id="t-sale">2024 Chris Sale — a Cy Young that never cracked elite? · Jul 23</h3>
+<h3 class="view" id="t-sale">2024 Chris Sale — a Cy Young that never cracked elite? <span class="when">Jul 23</span></h3>
 <p class="talkintro">What a rating owes a Triple Crown.</p>
 <div class="card talk-art">
 <p><span data-pk="519242p" tabindex="0" role="button">Chris Sale</span> won the 2024 pitching Triple Crown. This rating never gave him a top-1% stretch that year — his line topped out at 1588, a dozen points shy of the 1600 elite rule. A mistake?</p>
