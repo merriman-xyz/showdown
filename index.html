@@ -311,6 +311,15 @@ ul.duels li{display:flex;justify-content:space-between;align-items:baseline;gap:
 ul.duels li:last-child{border-bottom:none}
 ul.duels .res{font-variant-numeric:tabular-nums;white-space:nowrap}
 .figcap{font-size:10.5px;color:var(--muted);margin:6px 0 0;max-width:66ch}
+.talk-art h4{margin:14px 0 6px}
+.talk-art h4:first-child{margin-top:0}
+ol.board.scale li{grid-template-columns:56px minmax(0,1fr)}
+.sdesc{font-size:12px;color:var(--ink)}
+ul.hist{list-style:none;margin:0;padding:0}
+ul.hist li{display:grid;grid-template-columns:84px 1fr;gap:12px;align-items:baseline;
+  padding:5px 2px;border-bottom:1px solid var(--sunken)}
+ul.hist li:last-child{border-bottom:none}
+ul.hist .hd{font-weight:700;font-size:11px;font-variant-numeric:tabular-nums;color:var(--ink-strong)}
 #peakchart,#shochart{position:relative}
 .pchart line.ref{stroke:var(--border-strong);stroke-width:1;stroke-dasharray:3 3}
 .pchart polyline.bat{stroke:var(--tone-bat)}
@@ -320,7 +329,7 @@ ol.board.surge li{grid-template-columns:16px minmax(0,1fr) 18px 70px 42px}
 ol.board.surge .rng{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums;
   text-align:right;white-space:nowrap}
 #pane-talk{max-width:720px}
-#pane-about .card.talk-art{max-width:720px}
+#pane-about .card{max-width:720px}
 #pane-talk h3.view, #pane-about h3.view{scroll-margin-top:12px;font:600 16px/1.3 var(--serif);font-variant:small-caps;
   letter-spacing:.04em;text-transform:none;color:var(--ink-strong);margin:24px 0 6px}
 #pane-talk h3.view .when, #pane-about h3.view .when{font:700 9px/1.1 var(--sans);font-variant:normal;letter-spacing:.06em;
@@ -902,14 +911,7 @@ panes.about = `
 <button class="ychip" data-goto="a-hist">History</button>
 </div>
 <h3 class="view" id="a-what">What this is</h3>
-<div class="card">
-<div class="figrow">
-<div class="fig"><div class="lbl">At-bats rated</div><div class="val">2M</div></div>
-<div class="fig"><div class="lbl">From pitches</div><div class="val">8M+</div></div>
-<div class="fig"><div class="lbl">Since</div><div class="val">Apr 2015</div></div>
-<div class="fig"><div class="lbl">Rebuilds</div><div class="val">nightly</div></div>
-</div>
-<ul>
+<div class="card"><ul>
 <li><b>An Elo system for baseball</b> — the at-bat is the chess game; pitches are the moves</li>
 <li><b>Built from play itself</b> — every MLB at-bat since 2015, ~2 million rated matches</li>
 <li><b>One live number per player</b> — hitters and pitchers, updated nightly</li>
@@ -919,28 +921,39 @@ panes.about = `
 <li><b>The answer to</b> — who is actually best right now, this season, and since 2015</li>
 </ul></div>
 <h3 class="view" id="a-how">How it works</h3>
-<div class="card"><ul>
+<div class="card talk-art">
+<h4>The match</h4>
+<ul>
 <li><b>Every at-bat is a match</b> — hitter vs pitcher; the pitches are its moves</li>
 <li><b>Expectation first</b> — both ratings predict the at-bat&rsquo;s outcome before it happens</li>
 <li><b>Surprise moves ratings</b> — beat the expectation, gain; fall short, lose</li>
 <li><b>Upsets pay more</b> — a whiff from a contact artist counts extra; one from a hacker barely counts</li>
+</ul>
+<h4>The score</h4>
+<ul>
 <li><b>Match score</b> — the at-bat&rsquo;s total run value: walks and homers big, strikeouts negative</li>
-<li><b>Craft counts</b> — placement and speed skill survived a park-controlled test, so real outcomes keep half the vote; pure luck still washes out</li>
 <li><b>Half deserved, half real</b> — contact counts 50% what happened, 50% what the physics earned; the split was fit by prediction, not taste</li>
+<li><b>Craft counts</b> — placement and speed skill survived a park-controlled test, so real outcomes keep half the vote; pure luck still washes out</li>
+</ul>
+<h4>The clock</h4>
+<ul>
 <li><b>Memory of ~100 matches</b> — a few weeks for regulars; older play fades out</li>
 <li><b>Winters freeze</b> — tested on ten offseasons; freezing beat every alternative</li>
-<li><b>Moves rated too</b> — each pitch shape keeps its own record (Filthiest pitches, on the Season tab)</li>
 <li><b>Live lists</b> — 500+ career pitches and active in the last 3 weeks; early 2015&rsquo;s cold start converges within two months</li>
-</ul></div>
+<li><b>Moves rated too</b> — each pitch shape keeps its own record (Filthiest pitches, on the Season tab)</li>
+</ul>
+</div>
 <h3 class="view" id="a-scale">Reading the scale</h3>
 <div class="card talk-art">
-<ul class="duels">
-<li><span><b>1500</b></span><span class="res">league average</span></li>
-<li><span><b>1560+</b></span><span class="res">All-Star tier · top 10%</span></li>
-<li><span><b>1600+</b></span><span class="res">elite · top 1%</span></li>
-<li><span><b>±9</b></span><span class="res">daily wobble · under 15 is a tie</span></li>
-<li><span><b>°</b></span><span class="res">provisional · under 1,000 career matches</span></li>
-<li><span><b>25 pts</b></span><span class="res">&asymp; one win per season</span></li>
+<ol class="board scale">
+<li><span class="bar" style="background:var(--accent);width:34%"></span><span class="pname">1500</span><span class="sdesc">league average — everyone&rsquo;s starting line</span></li>
+<li><span class="bar" style="background:var(--accent);width:64%"></span><span class="pname">1560+</span><span class="sdesc">All-Star tier — top 10%</span></li>
+<li><span class="bar" style="background:var(--accent);width:92%"></span><span class="pname">1600+</span><span class="sdesc">elite — top 1%</span></li>
+</ol>
+<ul>
+<li><b>±9</b> — daily wobble; gaps under 15 are ties</li>
+<li><b>°</b> — provisional: under 1,000 career matches</li>
+<li><b>25 points</b> — about one win per season</li>
 </ul>
 <p>Two tracks: <b>Career Elo</b> is continuous and carries winter to winter; <b>Season Elo</b> restarts everyone at 1500 each spring — a live race standing, not a season award. The Almanac keeps each year&rsquo;s highs; all-time high-water marks live on the Since 2015 tab.</p>
 </div>
@@ -956,27 +969,35 @@ panes.about = `
 </ul></div>
 
 <h3 class="view" id="a-built">How it was built</h3>
-<div class="card"><ul>
-<li><b>Tanji Systems, July 2026</b> — built by <a class="txt" href="https://merriman.xyz">Brian Merriman</a>; AI coding agents assisted implementation — direction, architecture, research design, and validation were his</li>
-<li><b>Chosen by prediction</b> — every design decision tested out-of-sample</li>
-<li><b>15 rivals benched</b> — Glicko, pitch-type ratings, raw outcome grading</li>
-<li><b>Calibrated siblings</b> — the companion hit model says 64%, it happens 64.5% (43,000 held-out games)</li>
-<li><b>Market-humbled</b> — ~18,000 props graded against their closing lines; the market won; that verdict built this site</li>
+<div class="card talk-art">
+<div class="figrow">
+<div class="fig"><div class="lbl">Rival systems benched</div><div class="val">15</div></div>
+<div class="fig"><div class="lbl">Props graded vs close</div><div class="val">~18,000</div></div>
+<div class="fig"><div class="lbl">Held-out games</div><div class="val">43,000</div></div>
+</div>
+<ul>
+<li><b>Chosen by prediction</b> — every design decision tested out-of-sample; Glicko, pitch-type ratings, and raw outcome grading all lost the shootout</li>
+<li><b>Calibrated</b> — the companion hit model says 64%; it happens 64.5%</li>
+<li><b>Market-humbled</b> — the closing line beat every wagering model; that verdict built this site</li>
 <li><b>Sources</b> — MLB Statcast via pybaseball; Chadwick IDs; not MLB-affiliated</li>
-</ul></div>
+</ul>
+<div class="take"><b>Tanji Systems, July 2026</b> — built by <a class="txt" href="https://merriman.xyz">Brian Merriman</a>; AI coding agents assisted implementation — direction, architecture, research design, and validation were his.</div>
+</div>
 <h3 class="view" id="a-hist">History</h3>
-<div class="card"><ul>
-<li><b>Jul 22, 2026</b> — born as a betting-market study; first contest ratings built</li>
-<li><b>Jul 22–23</b> — fifteen-system shootout; ~18,000 props graded; almanac published</li>
-<li><b>Jul 23</b> — decade backfill, live boards, house design</li>
-<li><b>Jul 23</b> — the match basis: the at-bat is the chess game, pitches its moves; per-pitch ratings retained for the Filthiest board</li>
-<li><b>Jul 23</b> — grading refit after the &ldquo;Ichiro test&rdquo;: a park-controlled fit showed placement/speed craft is real skill, so contact now counts half actual, half expected</li>
-<li><b>Jul 23, later</b> — almanac backfilled to 2015; MVP / Cy Young tags; Discussions opened; player search and profiles</li>
-<li><b>Jul 23, later</b> — renamed: Diamond Elo &rarr; Showdown Elo; every at-bat is a showdown</li>
-<li><b>Jul 23, late</b> — external review caught a silent grouping defect (96% of at-bat totals summed the wrong pitches); fixed, guarded by a nightly test, full history replayed — and the 50/50 blend re-earned its verdict on the corrected refit</li>
-<li><b>Jul 24</b> — discussions become illustrated articles; almanac boards switch to each year&rsquo;s highest level; the nightly moves to GitHub Actions</li>
-<li><b>Now</b> — rebuilds itself nightly</li>
-</ul></div>`;
+<div class="card talk-art">
+<ul class="hist">
+<li><span class="hd">Jul 22, 2026</span><span>born as a betting-market study; first contest ratings built</span></li>
+<li><span class="hd">Jul 22–23</span><span>fifteen-system shootout; ~18,000 props graded; almanac published</span></li>
+<li><span class="hd">Jul 23</span><span>decade backfill, live boards, house design</span></li>
+<li><span class="hd">Jul 23</span><span>the match basis: the at-bat is the chess game, pitches its moves; per-pitch ratings retained for the Filthiest board</span></li>
+<li><span class="hd">Jul 23</span><span>grading refit after the &ldquo;Ichiro test&rdquo;: a park-controlled fit showed placement/speed craft is real skill, so contact now counts half actual, half expected</span></li>
+<li><span class="hd">Jul 23</span><span>almanac backfilled to 2015; MVP / Cy Young tags; Discussions opened; player search and profiles</span></li>
+<li><span class="hd">Jul 23</span><span>renamed: Diamond Elo &rarr; Showdown Elo; every at-bat is a showdown</span></li>
+<li><span class="hd">Jul 23</span><span>external review caught a silent grouping defect — 96% of at-bat totals summed the wrong pitches; fixed, guarded by a nightly test, history replayed, and the 50/50 blend re-earned its verdict</span></li>
+<li><span class="hd">Jul 24</span><span>discussions become illustrated articles; almanac boards switch to each year&rsquo;s highest level; the nightly moves to GitHub Actions</span></li>
+<li><span class="hd">Now</span><span>rebuilds itself nightly</span></li>
+</ul>
+</div>`;
 
 const TABS = [['season',`${YR} Season`],['live','Career'],['movers','Movers'],
               ['alltime','Since 2015'],['almanac','Almanac'],
